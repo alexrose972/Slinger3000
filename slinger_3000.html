@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Slinger 3000 · Yotpo</title>
+  <title>Slinger 3000 ¬∑ Yotpo</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -13,14 +13,13 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useMemo } = React;
+const { useState, useMemo } = React;
+
+// ‚îÄ‚îÄ‚îÄ Hardcode your Anthropic API key here ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
+const HARDCODED_API_KEY = "";
 const STORAGE_KEY = "slinger3000_apikey";
 
-// ─── Hardcode your Anthropic API key here to hide the input field ─────────────
-// Leave as empty string "" to show the key input in the UI instead.
-const HARDCODED_API_KEY = "";
-
-// ─── Color tokens ─────────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Color tokens ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const Y = {
   navy:          "#000000",
   coral:         "#000000",
@@ -39,31 +38,31 @@ const Y = {
   radiusLg:      "12px",
 };
 
-// ─── Vertical customer knowledge (from full 4,361-row Yotpo customer base) ────
+// ‚îÄ‚îÄ‚îÄ Vertical customer knowledge ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const VERTICAL_CUSTOMERS = {
-  apparel:         ["Fashion Nova","Everlane","White Fox Boutique","Lulus","Tuckernuck","Guru Denim","Faherty Brand","PacSun","cabi","Boston Proper","American Giant","Taylor Stitch"],
-  apparel_luxury:  ["Revolve","Jenni Kayne","Nadine Merabi","Citizens of Humanity","Diane Von Furstenberg","Theory","Veronica Beard","Anine Bing","Rixo","Jigsaw"],
-  activewear:      ["Patagonia","LSKD","Beyond Yoga","Senita Athletics","Alphalete","Oner Active","Jolyn","Madhappy","Buffbunny"],
-  footwear:        ["Clarks","Steve Madden","Birkenstock","Toms","KEEN","ECCO","Allbirds","OOFOS","Altra Running","Superfeet","HOKA","Cole Haan","Rothy's"],
-  beauty:          ["Proactiv","Revlon","Sol de Janeiro","AMOREPACIFIC","Rodan & Fields","IL MAKIAGE","Tarte Cosmetics","Thrive Causemetics","Olive and June","Dermalogica","Tatcha","Glossier","Credo Beauty","Primally Pure","True Botanicals","Supergoop","Beekman 1802","Sally Beauty","Beauty Bay","Chantecaille","Bondi Boost","Peach and Lily"],
-  home:            ["IKEA","Ruggable","Brooklinen","The White Company","Resident Home","Casper","Leesa","Serena & Lily","Peacock Alley","simplehuman","OXO","Our Place","Boll & Branch","MacKenzie-Childs","Zwilling","Magnolia"],
-  outdoor:         ["Revelyst","Stanley","KUIU","Backcountry","Patagonia","Mammut","Helly Hansen","Rather Outdoors","Sea to Summit","The North Face","Osprey","Klean Kanteen","RTIC"],
-  wellness:        ["Bonafide Health","HUM Nutrition","Love Wellness","Thorne Research","Alani Nutrition","Pure Formulas","Seed Health","Ancient Nutrition","JSHealth"],
-  recovery:        ["Hyperice","BLACKROLL","Wahoo Fitness","Peloton","Compex"],
-  intimates:       ["THINX","Bare Necessities","LASCANA","Spanx","Knix","Hunkemöller","Chantelle","ThirdLove","Bravissimo","Hanky Panky"],
-  jewelry:         ["PANDORA","Mejuri","ASTRID & MIYU","James Avery","Urban Body Jewelry","Effy"],
-  eyewear:         ["Zenni Optical","Goodr","Knockaround","Pair Eyewear","Smith Optics"],
-  food_bev:        ["Black Rifle Coffee","David's Tea","The Republic of Tea","Laird Superfood","King Arthur Baking","Dylan's Candy Bar","Baked by Melissa"],
-  pet:             ["Pet Honesty","The Honest Kitchen","Open Farm","Fullmoon Pet"],
-  tech:            ["Cedar Electronics","CASIO","Universal Audio","Lorex Technology","Shokz"],
-  gifts:           ["Gourmet Gift Baskets","Printfly"],
-  dept_store:      ["Selfridges","David Jones","Fenwick","Marks & Spencer"],
+  apparel:        ["Fashion Nova","Everlane","White Fox Boutique","Lulus","Tuckernuck","Guru Denim","Faherty Brand","PacSun","cabi","Boston Proper","American Giant","Taylor Stitch"],
+  apparel_luxury: ["Revolve","Jenni Kayne","Nadine Merabi","Citizens of Humanity","Diane Von Furstenberg","Theory","Veronica Beard","Anine Bing","Rixo","Jigsaw"],
+  activewear:     ["Patagonia","LSKD","Beyond Yoga","Senita Athletics","Alphalete","Oner Active","Jolyn","Madhappy","Buffbunny"],
+  footwear:       ["Clarks","Steve Madden","Birkenstock","Toms","KEEN","ECCO","Allbirds","OOFOS","Altra Running","Superfeet","HOKA","Cole Haan","Rothy's"],
+  beauty:         ["Proactiv","Revlon","Sol de Janeiro","AMOREPACIFIC","Rodan & Fields","IL MAKIAGE","Tarte Cosmetics","Thrive Causemetics","Olive and June","Dermalogica","Tatcha","Glossier","Credo Beauty","Primally Pure","True Botanicals","Supergoop","Beekman 1802","Sally Beauty","Beauty Bay","Chantecaille","Bondi Boost","Peach and Lily"],
+  home:           ["IKEA","Ruggable","Brooklinen","The White Company","Resident Home","Casper","Leesa","Serena & Lily","Peacock Alley","simplehuman","OXO","Our Place","Boll & Branch","MacKenzie-Childs","Zwilling","Magnolia"],
+  outdoor:        ["Revelyst","Stanley","KUIU","Backcountry","Patagonia","Mammut","Helly Hansen","Rather Outdoors","Sea to Summit","The North Face","Osprey","Klean Kanteen","RTIC"],
+  wellness:       ["Bonafide Health","HUM Nutrition","Love Wellness","Thorne Research","Alani Nutrition","Pure Formulas","Seed Health","Ancient Nutrition","JSHealth"],
+  recovery:       ["Hyperice","BLACKROLL","Wahoo Fitness","Peloton","Compex"],
+  intimates:      ["THINX","Bare Necessities","LASCANA","Spanx","Knix","Hunkem√∂ller","Chantelle","ThirdLove","Bravissimo","Hanky Panky"],
+  jewelry:        ["PANDORA","Mejuri","ASTRID & MIYU","James Avery","Urban Body Jewelry","Effy"],
+  eyewear:        ["Zenni Optical","Goodr","Knockaround","Pair Eyewear","Smith Optics"],
+  food_bev:       ["Black Rifle Coffee","David's Tea","The Republic of Tea","Laird Superfood","King Arthur Baking","Dylan's Candy Bar","Baked by Melissa"],
+  pet:            ["Pet Honesty","The Honest Kitchen","Open Farm","Fullmoon Pet"],
+  tech:           ["Cedar Electronics","CASIO","Universal Audio","Lorex Technology","Shokz"],
+  gifts:          ["Gourmet Gift Baskets","Printfly"],
+  dept_store:     ["Selfridges","David Jones","Fenwick","Marks & Spencer"],
 };
 
-// ─── Known brand → vertical mapping ──────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Known brand ‚Üí vertical mapping ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const KNOWN_BRANDS = {"fashion nova":"apparel","everlane":"apparel","tuckernuck":"apparel","white fox":"apparel","lulus":"apparel","guru denim":"apparel","ministry of supply":"apparel","faherty":"apparel","taylor stitch":"apparel","pacsun":"apparel","pacific sunwear":"apparel","american giant":"apparel","cabi":"apparel","madewell":"apparel","j.crew":"apparel","banana republic":"apparel","gap":"apparel","old navy":"apparel","uniqlo":"apparel","h&m":"apparel","boohoo":"apparel","na-kd":"apparel","cotton on":"apparel","superdry":"apparel","pepe jeans":"apparel","guess":"apparel","american eagle":"apparel","aritzia":"apparel","revolve":"apparel_luxury","jenni kayne":"apparel_luxury","nadine merabi":"apparel_luxury","citizens of humanity":"apparel_luxury","diane von furstenberg":"apparel_luxury","theory":"apparel_luxury","veronica beard":"apparel_luxury","anine bing":"apparel_luxury","rixo":"apparel_luxury","jigsaw":"apparel_luxury","ganni":"apparel_luxury","tory burch":"apparel_luxury","ralph lauren":"apparel_luxury","l'agence":"apparel_luxury","sunspel":"apparel_luxury","patagonia":"activewear","beyond yoga":"activewear","senita athletics":"activewear","lskd":"activewear","jolyn":"activewear","madhappy":"activewear","alphalete":"activewear","buffbunny":"activewear","oner active":"activewear","gymshark":"activewear","fabletics":"activewear","under armour":"activewear","gildan":"activewear","steven madden":"footwear","steve madden":"footwear","clarks":"footwear","birkenstock":"footwear","toms":"footwear","hoka":"footwear","allbirds":"footwear","oofos":"footwear","altra running":"footwear","superfeet":"footwear","bearpaw":"footwear","keen":"footwear","ecco":"footwear","cole haan":"footwear","rothy's":"footwear","skechers":"footwear","hey dude":"footwear","crocs":"footwear","fila":"footwear","ariat":"footwear","red wing":"footwear","sam edelman":"footwear","tamaris":"footwear","hush puppies":"footwear","timberland":"footwear","merrell":"footwear","saucony":"footwear","brooks running":"footwear","asics":"footwear","new balance":"footwear","vans":"footwear","sol de janeiro":"beauty","amorepacific":"beauty","proactiv":"beauty","revlon":"beauty","rodan":"beauty","beekman":"beauty","thrive causemetics":"beauty","olive and june":"beauty","credo beauty":"beauty","tatcha":"beauty","glossier":"beauty","milk makeup":"beauty","true botanicals":"beauty","primally pure":"beauty","dermalogica":"beauty","tarte":"beauty","il makiage":"beauty","supergoop":"beauty","fenty beauty":"beauty","sally beauty":"beauty","beauty bay":"beauty","chantecaille":"beauty","kiehl":"beauty","wella":"beauty","bondi boost":"beauty","peach and lily":"beauty","spacenk":"beauty","space nk":"beauty","bath & body works":"beauty","rituals":"beauty","we are wild":"beauty","uklash":"beauty","hismile":"beauty","nars":"beauty","urban decay":"beauty","brooklinen":"home","casper":"home","avocado":"home","ruggable":"home","resident home":"home","leesa":"home","simplehuman":"home","our place":"home","oxo":"home","ikea":"home","serena & lily":"home","peacock alley":"home","boll & branch":"home","the white company":"home","mackenzie-childs":"home","zwilling":"home","joseph joseph":"home","magnolia":"home","pottery barn":"home","west elm":"home","crate and barrel":"home","cb2":"home","williams sonoma":"home","lenox":"home","calphalon":"home","kitchenaid":"home","keurig":"home","instant pot":"home","vitamix":"home","westwing":"home","furniture village":"home","revelyst":"outdoor","stanley":"outdoor","kuiu":"outdoor","backcountry":"outdoor","mammut":"outdoor","helly hansen":"outdoor","rather outdoors":"outdoor","sea to summit":"outdoor","the north face":"outdoor","osprey":"outdoor","klean kanteen":"outdoor","arc'teryx":"outdoor","rains":"outdoor","lands' end":"outdoor","yeti":"outdoor","big green egg":"outdoor","bonafide health":"wellness","hum nutrition":"wellness","love wellness":"wellness","thorne":"wellness","alani nutrition":"wellness","pure formulas":"wellness","seed health":"wellness","huel":"wellness","hyperice":"recovery","blackroll":"recovery","compex":"recovery","wahoo fitness":"recovery","peloton":"recovery","therabody":"recovery","thinx":"intimates","knix":"intimates","harper wilde":"intimates","bare necessities":"intimates","lascana":"intimates","spanx":"intimates","hunkemoller":"intimates","chantelle":"intimates","thirdlove":"intimates","bravissimo":"intimates","hanky panky":"intimates","victoria's secret":"intimates","jockey":"intimates","meundies":"intimates","ann summers":"intimates","pandora":"jewelry","mejuri":"jewelry","urban body jewelry":"jewelry","astrid & miyu":"jewelry","james avery":"jewelry","effy":"jewelry","thomas sabo":"jewelry","brilliant earth":"jewelry","goodr":"eyewear","knockaround":"eyewear","zenni":"eyewear","pair eyewear":"eyewear","smith optics":"eyewear","warby parker":"eyewear","black rifle coffee":"food_bev","david's tea":"food_bev","republic of tea":"food_bev","laird superfood":"food_bev","king arthur":"food_bev","dylan's candy":"food_bev","baked by melissa":"food_bev","nespresso":"food_bev","pet honesty":"pet","the honest kitchen":"pet","open farm":"pet","petbarn":"pet","cedar electronics":"tech","casio":"tech","universal audio":"tech","lorex":"tech","logitech":"tech","bose":"tech","shokz":"tech","gourmet gift baskets":"gifts","printfly":"gifts","shutterfly":"gifts","customink":"gifts","selfridges":"dept_store","david jones":"dept_store","fenwick":"dept_store","marks and spencer":"dept_store","myer":"dept_store"};
 
-// ─── Keyword fallback ─────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Keyword fallback ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const KEYWORDS = [
   ["footwear",   ["shoe","boot","sneaker","sandal","slipper","heel","loafer","runner","footwear"]],
   ["beauty",     ["beauty","cosmetic","skincare","makeup","serum","moistur","cleanser","fragrance","shampoo","conditioner","nail","lash","brow"]],
@@ -79,7 +78,16 @@ const KEYWORDS = [
   ["apparel",    ["apparel","clothing","fashion","wear","dress","shirt","jeans","denim","boutique"]],
 ];
 
-// ─── Vertical inference ───────────────────────────────────────────────────────
+const VERTICAL_LABELS = {
+  apparel: "Apparel & Fashion", apparel_luxury: "Luxury Fashion",
+  activewear: "Activewear", footwear: "Footwear", beauty: "Beauty & Skincare",
+  home: "Home & Sleep", outdoor: "Outdoor & Sports", wellness: "Wellness & Nutrition",
+  recovery: "Sports Recovery", intimates: "Intimates & Underwear",
+  jewelry: "Jewelry", eyewear: "Eyewear", food_bev: "Food & Beverage",
+  pet: "Pet", tech: "Tech & Electronics", gifts: "Gifts",
+  dept_store: "Department Store",
+};
+
 function inferVertical(brandName) {
   const q = brandName.trim().toLowerCase();
   for (const [k, v] of Object.entries(KNOWN_BRANDS)) {
@@ -91,16 +99,6 @@ function inferVertical(brandName) {
   return null;
 }
 
-const VERTICAL_LABELS = {
-  apparel: "Apparel & Fashion", apparel_luxury: "Luxury Fashion",
-  activewear: "Activewear", footwear: "Footwear", beauty: "Beauty & Skincare",
-  home: "Home & Sleep", outdoor: "Outdoor & Sports", wellness: "Wellness & Nutrition",
-  recovery: "Sports Recovery", intimates: "Intimates & Underwear",
-  jewelry: "Jewelry", eyewear: "Eyewear", food_bev: "Food & Beverage",
-  pet: "Pet", tech: "Tech & Electronics", gifts: "Gifts",
-  dept_store: "Department Store",
-};
-
 function getMatches(targetText) {
   const brands = targetText.split(/,|\n/).map(s => s.trim()).filter(Boolean);
   return brands.map(brand => {
@@ -111,83 +109,204 @@ function getMatches(targetText) {
   }).filter(Boolean);
 }
 
-// ─── Dynamic system prompt builder ───────────────────────────────────────────
-function buildSystem(matches) {
-  const proofSection = matches.length > 0
-    ? `━━━ MATCHED YOTPO CUSTOMERS (USE THESE AS PRIMARY PROOF POINTS) ━━━
-${matches.map(({ brand, label, customers }) =>
-  `${brand} → ${label}: ${customers.slice(0,6).join(', ')}`
-).join('\n')}
+// ‚îÄ‚îÄ‚îÄ System prompt builder ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
+function buildSystem(matches, useLookalikes, targetType, audience, sender) {
+  // Lookalike proof points
+  const hasProof = useLookalikes && matches.length > 0;
+  const proofSection = hasProof
+    ? `‚îÅ‚îÅ‚îÅ MATCHED YOTPO CUSTOMERS ‚Äî USE AS PRIMARY PROOF POINTS ‚îÅ‚îÅ‚îÅ
+${matches.map(({ brand, label, customers }) => `${brand} ‚Üí ${label}: ${customers.slice(0,6).join(', ')}`).join('\n')}
+Pick 2-3 of the most recognizable. Match brand tier carefully.
 
-These are confirmed Yotpo customers in the same vertical as your target. Use 2-3 of the most recognizable ones as proof points. Match brand tier carefully.
+‚îÅ‚îÅ‚îÅ FULL YOTPO CUSTOMER REFERENCE ‚îÅ‚îÅ‚îÅ`
+    : `‚îÅ‚îÅ‚îÅ YOTPO CUSTOMER REFERENCE ‚îÅ‚îÅ‚îÅ`;
 
-━━━ ADDITIONAL YOTPO CUSTOMER KNOWLEDGE ━━━`
-    : `━━━ YOTPO CUSTOMER KNOWLEDGE ━━━`;
+  // Target type context
+  const targetContext = targetType === "brand"
+    ? `TARGET TYPE: Brand ‚Äî This is a brand that doesn't yet use Yotpo. Focus on what they're missing and the concrete business outcome Yotpo would add. Use peer brands as proof that it works in their category.`
+    : targetType === "competitor"
+    ? `TARGET TYPE: Competitor displacement ‚Äî This brand is currently using a competing platform. Lead with the specific gap their current tool has. Be direct about what they're leaving on the table. Name the competitor, name the weakness, name what Yotpo does instead.`
+    : `TARGET TYPE: Other ‚Äî This may be a segment, persona, or list. Write with broader applicability while staying specific where possible.`;
 
-  return `You are an expert B2B email copywriter for Yotpo — an ecommerce marketing platform for reviews, loyalty, UGC, and AI discoverability. Yotpo's products are: Reviews, Loyalty & Referrals, Visual UGC, and AI Discoverability (new). Yotpo does NOT have email marketing or SMS marketing. Yotpo integrates natively with Klaviyo and Attentive. You write outbound cold email sequences for Alex Rosenblum, Lifecycle Product Marketing Manager at Yotpo.
+  // Audience rules
+  const audienceRules = audience === "exec"
+    ? `‚îÅ‚îÅ‚îÅ AUDIENCE: EXEC-FOCUSED ‚îÅ‚îÅ‚îÅ
+Recipients are C-suite or VP-level (CMO, VP Marketing, Head of Retention, Head of CRM).
+- Write at a business-outcome level only. Revenue, conversion, competitive position, brand equity, ROI.
+- Never mention specific product features, UI, or workflows.
+- One insight per email. Executives do not read walls of text.
+- The ask is always a conversation, never a demo or trial.
+- They connect the dots themselves. Don't over-explain.`
+    : `‚îÅ‚îÅ‚îÅ AUDIENCE: USER-FOCUSED ‚îÅ‚îÅ‚îÅ
+Recipients are practitioners (marketing managers, retention specialists, ecommerce managers).
+- Write at a feature and workflow level. Show how Yotpo solves their day-to-day problems.
+- Specific product capabilities, integrations, and stats are welcome.
+- Help them picture actually using it. Show the before and after.
+- The ask can include a demo or trial.`;
+
+  // Sender persona
+  const senderRules = sender === "exec"
+    ? `‚îÅ‚îÅ‚îÅ SENDER PERSONA: EXEC ‚îÅ‚îÅ‚îÅ
+Voice: Warm, strategic, relationship-first. Knows everyone in DTC. Treats recipients as peers.
+- First-name opener only. No "Hi" or "Hey."
+- Short punchy sentences. No run-ons.
+- No em dashes. Use periods or commas.
+- No bullet points anywhere in the email body.
+- Sign off with first name only. No title, no company.
+- Frequently name-drops a relevant client in the recipient's category.
+- No "not just X, but Y" constructions.
+- No AI tells: never use "Furthermore", "Moreover", "Additionally", "In conclusion", "It's worth noting", "Importantly."
+- Never open with "At Yotpo..." or "We at Yotpo..."
+- No over-explaining. The reader is smart.
+- Every email reads like a real person typed it fast. If it sounds generated, rewrite it.
+- Subject lines: punchy and specific. Not clickbait.`
+    : sender === "marketing"
+    ? `‚îÅ‚îÅ‚îÅ SENDER PERSONA: MARKETING ‚îÅ‚îÅ‚îÅ
+Tone: Confident, direct, conversational with a consultative edge. Peer-to-peer, not a pitch.
+- Short and scannable. Paragraphs are 2-3 sentences max. No filler.
+- Lead with insight before the ask. Open with a specific observation or data point.
+- Low-pressure CTAs: "worth a conversation?", "happy to connect if the timing is right." Never urgent or aggressive.
+- Reference stats but don't over-explain them: "35% higher conversion", "5.4% lift."
+- Name competitors directly: Okendo, Trustpilot, Bazaarvoice, PowerReviews. Never "your current provider."
+- Sign off with first name only. No boilerplate, no "best regards."
+- Each email in the sequence escalates the angle, not the pressure. Follow-ups introduce a new idea.`
+    : `‚îÅ‚îÅ‚îÅ SENDER PERSONA: SALES ‚îÅ‚îÅ‚îÅ
+Tone: Sharp, urgent, unapologetically direct with personality.
+- Open with a hook, not a hello. No warm-up. The first line earns attention or it's wasted.
+- Call out competitors by name and say plainly what they can't do. No hedging.
+- Short sentences that hit. Rhythm matters. Statements land one at a time.
+- Frame it as "here's what you're leaving on the table" not "we're the best."
+- CTAs have teeth: "let's get 20 minutes on the calendar", "tell me you've at least looked at this."
+- Dry observations and pointed questions are good. Bro energy is not.
+- Follow-ups add stakes, not just re-asks: what's being missed, what's changing, what the window looks like.
+- Urgency comes from the insight being real, not from fake deadlines.
+- Tone: a rep who's done the homework, believes in the product, and will make sure you at least hear the case.`;
+
+  return `You are an expert B2B email copywriter for Yotpo ‚Äî an ecommerce marketing platform for reviews, loyalty, UGC, and AI discoverability. Yotpo's products: Reviews, Loyalty & Referrals, Visual UGC, and AI Discoverability. Yotpo does NOT have email or SMS ‚Äî it integrates natively with Klaviyo and Attentive. You write outbound cold email sequences on behalf of Alex Rosenblum, Lifecycle Product Marketing Manager at Yotpo.
+
+${targetContext}
 
 ${proofSection}
-Reference these brands when writing proof points. Match them to the target brand's vertical and positioning.
-
 APPAREL & FASHION: Fashion Nova, Everlane, White Fox Boutique, Lulus, Tuckernuck, Guru Denim, Faherty Brand, PacSun
 LUXURY FASHION: Revolve, Jenni Kayne, Nadine Merabi, Citizens of Humanity, Diane Von Furstenberg, Theory
-ACTIVEWEAR: LSKD, Beyond Yoga, Senita Athletics, Athletic Propulsion Labs, Jolyn, Madhappy, Patagonia
-FOOTWEAR: Clarks, Steve Madden, Birkenstock, Toms, KEEN, ECCO, Allbirds, OOFOS, Altra Running, Superfeet, HOKA (via Deckers)
-BEAUTY & SKINCARE: Proactiv, Revlon, Sol de Janeiro, AMOREPACIFIC, Rodan & Fields, IL MAKIAGE, Tarte Cosmetics, Thrive Causemetics, Olive and June, Dermalogica, Tatcha, Glossier, Credo Beauty, Primally Pure, True Botanicals, Supergoop, Beekman 1802
-HOME & SLEEP: IKEA, Ruggable, Brooklinen, The White Company, Resident Home (Nectar/DreamCloud), Casper, Leesa (3Z Brands), Serena & Lily, Peacock Alley, simplehuman, OXO, Our Place, Boll & Branch
-OUTDOOR & SPORTS: Revelyst, Stanley, KUIU, Backcountry, Patagonia, Mammut, Rather Outdoors, Hydro Flask, Sea to Summit, The North Face, Osprey
-WELLNESS & NUTRITION: Golden Hippo, Bonafide Health, HUM Nutrition, Love Wellness, Thorne Research, Alani Nutrition
+ACTIVEWEAR: LSKD, Beyond Yoga, Senita Athletics, Jolyn, Madhappy, Patagonia, Alphalete, Oner Active
+FOOTWEAR: Clarks, Steve Madden, Birkenstock, Toms, KEEN, ECCO, Allbirds, OOFOS, Altra Running, Superfeet, HOKA
+BEAUTY & SKINCARE: Proactiv, Revlon, Sol de Janeiro, AMOREPACIFIC, Rodan & Fields, IL MAKIAGE, Tarte Cosmetics, Thrive Causemetics, Olive and June, Dermalogica, Tatcha, Glossier, Credo Beauty, True Botanicals, Supergoop, Beekman 1802
+HOME & SLEEP: IKEA, Ruggable, Brooklinen, The White Company, Resident Home, Casper, Leesa, Serena & Lily, simplehuman, OXO, Our Place, Boll & Branch
+OUTDOOR & SPORTS: Revelyst, Stanley, KUIU, Backcountry, Patagonia, Mammut, Rather Outdoors, Sea to Summit, The North Face, Osprey
+WELLNESS & NUTRITION: Bonafide Health, HUM Nutrition, Love Wellness, Thorne Research, Alani Nutrition, Pure Formulas, Seed Health
 SPORTS RECOVERY: Hyperice, BLACKROLL, Wahoo Fitness, Peloton, Compex
-INTIMATES & UNDERWEAR: THINX, Bare Necessities, LASCANA, Spanx, Knix, Hunkemöller, Chantelle
+INTIMATES & UNDERWEAR: THINX, Bare Necessities, LASCANA, Spanx, Knix, Hunkem√∂ller, Chantelle, ThirdLove
 JEWELRY: PANDORA, Mejuri, ASTRID & MIYU, James Avery, Urban Body Jewelry
 EYEWEAR: Zenni Optical, Goodr, Knockaround, Pair Eyewear
 FOOD & BEVERAGE: Black Rifle Coffee, David's Tea, The Republic of Tea, Laird Superfood
 PET: Pet Honesty, The Honest Kitchen, Open Farm
 TECH & ELECTRONICS: Cedar Electronics, CASIO, Universal Audio, Lorex Technology
-GIFTS: Gourmet Gift Baskets, Printfly
 
-Always pick 2-3 proof brands that are genuinely close matches in vertical AND brand tier.
+Always pick 2-3 proof brands that are close matches in vertical AND brand tier.
 
-━━━ COMPETITOR INTELLIGENCE ━━━
-PowerReviews — G2: 5/10. Weaknesses: poor display customization, no AI features, weak retail syndication, slow roadmap.
-Bazaarvoice — G2: 5/10. Weaknesses: expensive, slow implementation, legacy enterprise feel, no loyalty, no UGC, no AI discoverability.
-Okendo — lighter weight, lacks AI features, no Visual UGC, weak loyalty integration, Shopify-heavy. Klaviyo also just launched their own reviews product, putting Okendo customers in a fragile position. Yotpo + Klaviyo is a stronger pairing than Okendo + Klaviyo because Yotpo's native Klaviyo integration is deeper — reviews trigger flows automatically — and Yotpo adds Loyalty and Visual UGC that Okendo can't match.
-Feefo — mostly UK/EU, weak US integrations, limited social proof tools.
-Stamped — smaller, less mature, limited enterprise features.
-LoyaltyLion — strong for quick setup and SMB launch, but limited depth for optimization at scale. Key weaknesses: basic segmentation vs. Yotpo's 44+ attribute segmentation; less transparent attribution vs. Yotpo's conservative redeemer-based model (CFO-trustworthy); template-based customization vs. Yotpo's no-code + API-driven flexibility; primarily Shopify-centric vs. Yotpo's multi-platform, global support; tiered support vs. Yotpo's dedicated CSM. Core message: "LoyaltyLion helps you launch — Yotpo helps you evolve." Use discovery questions to expose gaps: "What % of your points are actually being redeemed?" / "When did your loyalty program last meaningfully evolve?" / "If your CFO asked you to defend loyalty ROI, how confident would you feel?" Real-world pain: brands report points accumulating with no redemptions, no way to prove ROI, programs going invisible. Yotpo's advantage = data → segmentation → activation in one system.
+‚îÅ‚îÅ‚îÅ COMPETITOR INTELLIGENCE ‚îÅ‚îÅ‚îÅ
+PowerReviews ‚Äî G2: 5/10. No AI features, poor display customization, weak retail syndication, slow roadmap.
+Bazaarvoice ‚Äî G2: 5/10. Expensive, slow implementation, legacy enterprise feel, no loyalty, no UGC, no AI discoverability.
+Okendo ‚Äî Lightweight, lacks AI features, no Visual UGC, weak loyalty, Shopify-heavy. Klaviyo just launched their own reviews product, putting Okendo customers at risk. Yotpo's Klaviyo integration is deeper and native ‚Äî reviews trigger flows automatically ‚Äî plus Loyalty and Visual UGC that Okendo can't match.
+Feefo ‚Äî Mostly UK/EU, weak US integrations, limited social proof tools.
+Stamped ‚Äî Smaller, less mature, limited enterprise features.
+LoyaltyLion ‚Äî Good for quick launch, weak at scale. Basic segmentation vs. Yotpo's 44+ attributes. Less transparent attribution vs. Yotpo's conservative redeemer-based model (CFO-trustworthy). Template customization vs. Yotpo's no-code + API flexibility. Primarily Shopify vs. Yotpo's multi-platform support. No dedicated CSM. Message: "LoyaltyLion helps you launch. Yotpo helps you evolve."
+Trustpilot ‚Äî Open review platform, not brand-owned. Reviews can come from anyone, not verified purchasers. No loyalty, no UGC, no AI discoverability. Weak on DTC use cases.
 
-When writing competitor displacement emails, name their platform, cite the G2 score if relevant, and name 2-3 Yotpo customers in the same vertical.
+‚îÅ‚îÅ‚îÅ CONTENT LIBRARY ‚Äî STATS AND PROOF BY ANGLE ‚îÅ‚îÅ‚îÅ
+Reviews:
+- 20% higher review submission rate with Yotpo Smart Prompts vs. generic review requests
+- Brands switching to Yotpo see 35% higher on-site conversion on average
+- Smart Prompts ask contextual post-purchase questions (sleep position, skin type, fit) that produce richer, more actionable reviews
+- Verified buyer reviews build more trust than open platforms
 
-━━━ KEY STATS BY ANGLE ━━━
-Reviews: 20% higher review submission rate with Smart Prompts. Brands that switch to Yotpo see 35% higher conversion on average. Smart Prompts ask contextual post-purchase questions (sleep position, skin type, fit) that produce richer, more useful reviews.
-Syndication: Yotpo auto-syndicates reviews to retail partner PDPs (Nordstrom, Mattress Firm, REI, etc.). PowerReviews and Bazaarvoice don't do this cleanly.
-Loyalty: Yotpo Loyalty integrates natively with Reviews and Visual UGC — no third-party stitching. One platform, one data model. Brands can reward customers for leaving reviews and submitting photos/videos, driving a repurchase flywheel.
-Visual UGC: Yotpo collects and displays customer photos and videos alongside reviews. UGC can be syndicated to retail partners and used in paid social. Competitors like Okendo have weaker UGC capabilities.
-AI Discoverability: Yotpo's newest product. 50% of shoppers now use AI tools (ChatGPT, Perplexity, Google AI Overviews) to research purchases. Yotpo AI Review Summaries drive a 5.4% lift in conversion and feed structured review content into AI shopping answers. Queries like "best [product] for [use case]" pull Yotpo review data directly into AI results.
-Integrations: Yotpo integrates natively with Klaviyo (reviews trigger Klaviyo email flows automatically), Attentive, Google Shopping (review feed sync for star ratings in PLAs), Meta, Salesforce Commerce Cloud, and Shopify Plus. Do NOT say Yotpo has its own email or SMS product — it does not. Yotpo + Klaviyo together is a stronger stack than Okendo + Klaviyo because the Reviews-to-Klaviyo integration is deeper and native.
-Contract Buyout: Yotpo has a formal buyout program. Brands don't need to wait out a bad contract.
-Win-back: Reference the specific gap that caused the churn. Lead with what's changed on the product side.
+Syndication:
+- Yotpo auto-syndicates reviews to retail partner PDPs: Nordstrom, Mattress Firm, REI, and others
+- PowerReviews and Bazaarvoice syndication is inconsistent and retailer-dependent
+- Brands that sell through retail lose conversion if their review content doesn't follow them to the shelf
 
-━━━ TONE AND STYLE RULES ━━━
-Follow these exactly. They are non-negotiable.
+Loyalty:
+- Yotpo Loyalty integrates natively with Reviews and Visual UGC ‚Äî one platform, one data model, no third-party stitching
+- 44+ customer attributes available for segmentation ‚Äî far beyond what LoyaltyLion or competitors offer
+- Brands can reward customers for leaving reviews and submitting UGC, creating a repurchase flywheel
+- Yotpo attribution is redeemer-based ‚Äî conservative and CFO-trustworthy vs. inflated "influenced revenue" models
+- Common pain: brands on LoyaltyLion report points accumulating with no redemptions, no way to prove ROI
 
-- Emails must be readable in 15 seconds. Short. Punchy. Every sentence earns its place.
-- Email 1 opens with a one-sentence human intro: who Alex is and why she's writing. Example: "I'm Alex, I work on product marketing at Yotpo, and I'm reaching out to a handful of brands we think could be a strong fit." Keep it natural, not corporate.
-- After the intro, make ONE specific point. One. Not three. Not a list.
-- Each follow-up email introduces one new angle, stat, or proof point. Never repeat what was already said in a previous email.
-- The final email is 3-5 sentences. Low pressure. Easy out. Something like "last one from me" energy.
-- Never use em-dashes. Use commas or periods instead.
-- No binary setups, contrast framing, or rhetorical reversals. No "not this, but that" phrasing.
-- Keep it specific and concrete. One clear point per paragraph with a real detail.
-- Paragraphs are 1-3 sentences. Never longer.
-- No bullet lists unless there are exactly 3 items and prose would genuinely be harder to read.
-- Never use: "synergies", "leverage", "unlock", "game-changer", "revolutionize", "I wanted to reach out", "hope this finds you well", "touch base", "circle back".
+Visual UGC:
+- Yotpo collects and displays customer photos and videos alongside reviews
+- UGC can be syndicated to retail partner PDPs and used in paid social campaigns
+- Okendo and most competitors have weaker or no UGC capabilities
+
+AI Discoverability:
+- 50% of shoppers now use AI tools (ChatGPT, Perplexity, Google AI Overviews) to research before buying
+- Yotpo AI Review Summaries drive a 5.4% lift in conversion
+- Queries like "best [product] for [use case]" pull Yotpo review content directly into AI answers
+- Structured review data from Yotpo feeds into Google Shopping, AI Overviews, and LLM-based search results
+
+Integrations:
+- Native Klaviyo integration: reviews trigger Klaviyo flows automatically, no custom setup
+- Also integrates with: Attentive, Google Shopping (star ratings in PLAs), Meta, Salesforce Commerce Cloud, Shopify Plus
+- Yotpo does NOT have its own email or SMS product ‚Äî it powers the stack you already use
+- Yotpo + Klaviyo is a stronger pairing than Okendo + Klaviyo because the integration is deeper and native
+
+Contract Buyout:
+- Yotpo has a formal contract buyout program ‚Äî brands don't need to wait out a bad deal
+
+Win-back:
+- Reference the specific gap that caused the churn
+- Lead with what has changed on the product side since they left
+
+‚îÅ‚îÅ‚îÅ LENGTH RULE ‚Äî NON-NEGOTIABLE ‚îÅ‚îÅ‚îÅ
+Every email body must be 60‚Äì120 words. No exceptions. No email may exceed 120 words.
+Before outputting each email, count the words. If it exceeds 120 words, cut it. If it is under 60 words, expand it slightly.
+This is the single most important constraint. A 30-second read is the maximum. A 15-second read is the minimum.
+
+‚îÅ‚îÅ‚îÅ NO HALLUCINATION RULE ‚Äî NON-NEGOTIABLE ‚îÅ‚îÅ‚îÅ
+Only use stats, numbers, customer names, and facts that are explicitly listed in the content library above.
+Do not invent statistics, percentages, customer names, or product capabilities.
+If you don't have a specific stat for a claim, make the point without the number rather than fabricating one.
+
+‚îÅ‚îÅ‚îÅ SEQUENCE THREAD CADENCE ‚îÅ‚îÅ‚îÅ
+The emails must read like a real human thread ‚Äî not a series of disconnected blasts.
+
+EMAIL 1: Normal opener. Introduce yourself and make one specific point.
+EMAIL 2: Open as a natural follow-up. Examples: "Wanted to follow up on this.", "Following up in case this got buried.", "One thing I forgot to mention in my last note."
+EMAIL 3: Add a new angle with a conversational transition. Examples: "Forgot to mention this earlier.", "One more thing worth sharing.", "Had another thought after my last email."
+EMAIL 4: Add stakes or urgency from a real insight. Examples: "Wanted to add one more thing before I stop filling your inbox.", "This came to mind after my last note."
+EMAIL 5: Final note. Easy out, low pressure, no hard sell. Examples: "Last one from me.", "I'll leave it here.", "Didn't want to leave without mentioning this."
+
+Each email opens with one of these natural thread openers (except Email 1). The opener should feel like a real person picking up a conversation, not a marketing sequence.
+Never repeat the same opener across emails in a sequence.
+
+‚îÅ‚îÅ‚îÅ UNIVERSAL WRITING RULES ‚îÅ‚îÅ‚îÅ
+These apply regardless of persona. They are non-negotiable.
+
+- EM DASHES ARE STRICTLY FORBIDDEN. The character "‚Äî" must never appear anywhere in any email. Not in the subject line, not in the body, not in the sign-off. Use a comma or period instead. Every time.
+- Every email (including follow-ups after the thread opener) must lead with a YOU or BRAND statement. The first substantive sentence must be about the recipient, their brand, their category, their customers, or something specific to them. Never open with a general market observation, industry trend, or statement about Yotpo. Wrong: "AI is changing how shoppers discover products." Right: "{{Account Name}} has strong review volume ‚Äî the question is whether that content is reaching shoppers before they start searching."
+- No binary setups: no "not just X, but Y" or "it's not about X, it's about Y."
+- No AI tells: never use "Furthermore", "Moreover", "Additionally", "In conclusion", "It's worth noting", "Importantly."
+- Never use: "synergies", "leverage", "unlock", "game-changer", "revolutionize", "I wanted to reach out", "hope this finds you well", "touch base", "circle back."
+- No self-referential openers: never start with "At Yotpo..." or "We at Yotpo..."
+- Use real names, real logos, real numbers from the content library only. Never invent.
+- No bullet lists in email bodies.
+- Every email in a sequence introduces a new angle. Never repeat what was said in a previous email.
 - All emails in a series share the SAME subject line. Do not write a new subject per email.
-- Sign off: Alex / Lifecycle Product Marketing Manager, Yotpo
 - Use {{First Name}} and {{Account Name}} as personalization tokens.
 
-━━━ OUTPUT FORMAT ━━━
-Follow this format exactly. No deviations, no extra headers, no markdown.
+${audienceRules}
+
+${senderRules}
+
+‚îÅ‚îÅ‚îÅ OUTPUT FORMAT ‚îÅ‚îÅ‚îÅ
+Follow this exactly. No deviations, no extra headers, no markdown formatting inside emails.
+
+Write 5 subject line options. Each one must be meaningfully different from the others ‚Äî different angle, different hook, different length. Do not write variations of the same idea. Think of them as 5 competing approaches a human would test:
+- One could be a question
+- One could be a short statement (under 5 words)
+- One could reference the brand or category specifically
+- One could lead with a number or stat
+- One could be curiosity-driven without being clickbait
 
 SUBJECT_1: [subject line option 1]
 SUBJECT_2: [subject line option 2]
@@ -201,19 +320,16 @@ EMAIL_1:
 EMAIL_2:
 [full email body]
 
-EMAIL_3:
-[full email body]
-
 (continue for however many emails were requested)`;
 }
 
-// ─── Angles ───────────────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Angles ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const ANGLES = [
   "Competitor Displacement","AI Discoverability","Reviews",
   "Loyalty","Visual UGC","Integrations","Syndication","Win-back","Contract Buyout",
 ];
 
-// ─── Parse response ───────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Parse response ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function parseResponse(text) {
   const subjects = [];
   for (let i = 1; i <= 5; i++) {
@@ -230,14 +346,13 @@ function parseResponse(text) {
   return { subjects, emails };
 }
 
-// ─── Read time estimate ───────────────────────────────────────────────────────
 function readTime(text) {
   const words = text.trim().split(/\s+/).length;
   const seconds = Math.round((words / 238) * 60);
   return seconds < 60 ? `${seconds}s read` : `${Math.round(seconds / 60)}m read`;
 }
 
-// ─── Shared styles ────────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Shared styles ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const inputStyle = {
   width: "100%", fontSize: 14, padding: "10px 14px",
   border: `1.5px solid ${Y.border}`, borderRadius: Y.radius,
@@ -245,43 +360,62 @@ const inputStyle = {
   fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box",
 };
 
+function PillGroup({ options, value, onChange }) {
+  return (
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      {options.map(o => {
+        const label = typeof o === "string" ? o : o.label;
+        const val   = typeof o === "string" ? o : o.value;
+        const active = value === val;
+        return (
+          <button key={val} onClick={() => onChange(val)} style={{
+            padding: "9px 16px", borderRadius: Y.radius,
+            border: active ? `2px solid ${Y.navy}` : `1.5px solid ${Y.tagBorder}`,
+            background: active ? Y.navy : Y.tagBg,
+            color: active ? Y.white : Y.textPrimary,
+            fontWeight: active ? 600 : 400, fontSize: 13,
+            cursor: "pointer", fontFamily: "inherit", letterSpacing: "-0.01em", transition: "all 0.1s",
+          }}>{label}</button>
+        );
+      })}
+    </div>
+  );
+}
+
 function Btn({ children, variant = "primary", disabled, onClick, style = {} }) {
   return (
-    <button
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 8,
-        padding: "11px 22px", borderRadius: Y.radius,
-        border: variant === "ghost" ? `1.5px solid ${Y.border}` : "none",
-        background: variant === "primary" ? Y.coral : variant === "navy" ? Y.navy : "transparent",
-        color: variant === "ghost" ? Y.textSecondary : Y.white,
-        fontSize: 14, fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer",
-        fontFamily: "inherit", opacity: disabled ? 0.55 : 1,
-        letterSpacing: "-0.01em", transition: "opacity 0.1s", ...style,
-      }}
-      disabled={disabled} onClick={onClick}
-    >{children}</button>
+    <button style={{
+      display: "inline-flex", alignItems: "center", gap: 8,
+      padding: "11px 22px", borderRadius: Y.radius,
+      border: variant === "ghost" ? `1.5px solid ${Y.border}` : "none",
+      background: variant === "primary" ? Y.navy : variant === "navy" ? Y.navy : "transparent",
+      color: variant === "ghost" ? Y.textSecondary : Y.white,
+      fontSize: 14, fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer",
+      fontFamily: "inherit", opacity: disabled ? 0.5 : 1,
+      letterSpacing: "-0.01em", transition: "opacity 0.1s", ...style,
+    }} disabled={disabled} onClick={onClick}>{children}</button>
   );
 }
 
 function Field({ label, hint, optional, children }) {
   return (
-    <div style={{ marginBottom: "1.4rem" }}>
-      <div style={{ fontSize: 13, fontWeight: 600, color: Y.textPrimary, marginBottom: 6, display: "flex", gap: 6, alignItems: "center" }}>
+    <div style={{ marginBottom: "1.5rem" }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: Y.textPrimary, marginBottom: 4, display: "flex", gap: 6, alignItems: "center" }}>
         {label}
         {optional && <span style={{ fontSize: 12, fontWeight: 400, color: Y.textMuted }}>optional</span>}
       </div>
-      {hint && <div style={{ fontSize: 12, color: Y.textMuted, marginBottom: 6, lineHeight: 1.5 }}>{hint}</div>}
+      {hint && <div style={{ fontSize: 12, color: Y.textMuted, marginBottom: 8, lineHeight: 1.5 }}>{hint}</div>}
       {children}
     </div>
   );
 }
 
-function Spinner({ color = "white" }) {
+function Spinner() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" style={{ animation: "spin 0.7s linear infinite", flexShrink: 0 }}>
       <style>{"@keyframes spin{to{transform:rotate(360deg)}}"}</style>
-      <circle cx="7" cy="7" r="5" fill="none" stroke={color === "navy" ? "rgba(17,17,17,0.2)" : "rgba(255,255,255,0.35)"} strokeWidth="2" />
-      <path d="M7 2a5 5 0 0 1 5 5" fill="none" stroke={color === "navy" ? Y.navy : "white"} strokeWidth="2" strokeLinecap="round" />
+      <circle cx="7" cy="7" r="5" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+      <path d="M7 2a5 5 0 0 1 5 5" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -289,30 +423,12 @@ function Spinner({ color = "white" }) {
 function ErrorBox({ msg }) {
   if (!msg) return null;
   return (
-    <div style={{ fontSize: 13, color: "#000000", background: "#f5f5f5", border: "1.5px solid #e0e0e0", borderRadius: Y.radius, padding: "10px 14px", marginBottom: "1rem", lineHeight: 1.5 }}>
+    <div style={{ fontSize: 13, color: Y.textPrimary, background: Y.offWhite, border: `1.5px solid ${Y.border}`, borderRadius: Y.radius, padding: "10px 14px", marginBottom: "1rem", lineHeight: 1.5 }}>
       {msg}
     </div>
   );
 }
 
-// ─── Match badge ──────────────────────────────────────────────────────────────
-function MatchBadge({ matches }) {
-  if (!matches.length) return null;
-  return (
-    <div style={{ background: Y.greenBg, border: `1.5px solid ${Y.greenBorder}`, borderRadius: Y.radius, padding: "10px 14px", marginTop: 8 }}>
-      <div style={{ fontSize: 12, fontWeight: 700, color: Y.green, marginBottom: 4 }}>
-        ✓ Vertical matched — Yotpo customers injecting into prompt
-      </div>
-      {matches.map(({ brand, label, customers }) => (
-        <div key={brand} style={{ fontSize: 12, color: "#333333", lineHeight: 1.6 }}>
-          <strong>{brand}</strong> → {label}: {customers.slice(0, 4).join(', ')}{customers.length > 4 ? ` +${customers.length - 4} more` : ''}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ─── Loading screen ───────────────────────────────────────────────────────────
 function LoadingScreen({ target, angle }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "5rem 2rem", gap: 20 }}>
@@ -324,62 +440,58 @@ function LoadingScreen({ target, angle }) {
       </div>
       <div style={{ textAlign: "center" }}>
         <div style={{ fontSize: 16, fontWeight: 700, color: Y.navy, marginBottom: 6 }}>Slinging your emails...</div>
-        <div style={{ fontSize: 13, color: Y.textMuted }}>
-          {target && angle ? `${angle} sequence for ${target.split(/,|\n/)[0].trim()}` : "Generating your sequence"}
-        </div>
+        {target && angle && <div style={{ fontSize: 13, color: Y.textMuted }}>{angle} sequence for {target.split(/,|\n/)[0].trim()}</div>}
       </div>
     </div>
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Main component ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function Slinger() {
-  const useHardcoded = HARDCODED_API_KEY.trim().length > 0;
-  const [apiKey,      setApiKey]      = useState(() => useHardcoded ? HARDCODED_API_KEY : (localStorage.getItem(STORAGE_KEY) || ""));
-  const [showKeyField, setShowKeyField] = useState(false);
-  const [showKey,     setShowKey]     = useState(false);
-  const [rememberKey, setRememberKey] = useState(() => !!localStorage.getItem(STORAGE_KEY));
-  const [target,      setTarget]      = useState("");
-  const [angle,       setAngle]       = useState("");
-  const [count,       setCount]       = useState(3);
-  const [context,     setContext]     = useState("");
-  const [step,        setStep]        = useState("form");
-  const [error,       setError]       = useState("");
-  const [subjects,    setSubjects]    = useState([]);
-  const [selSub,      setSelSub]      = useState(0);
-  const [emails,      setEmails]      = useState([]);
-  const [history,     setHistory]     = useState([]);
-  const [feedback,    setFeedback]    = useState("");
+  const resolvedKey = HARDCODED_API_KEY.trim() || localStorage.getItem("slinger3000_apikey") || "";
+
+  const [targetType,   setTargetType]   = useState("brand");
+  const [target,       setTarget]       = useState("");
+  const [useLookalikes,setUseLookalikes]= useState(true);
+  const [audience,     setAudience]     = useState("");
+  const [sender,       setSender]       = useState("");
+  const [angle,        setAngle]        = useState("");
+  const [count,        setCount]        = useState(3);
+  const [context,      setContext]      = useState("");
+  const [step,         setStep]         = useState("form");
+  const [error,        setError]        = useState("");
+  const [subjects,     setSubjects]     = useState([]);
+  const [selSub,       setSelSub]       = useState(0);
+  const [emails,       setEmails]       = useState([]);
+  const [history,      setHistory]      = useState([]);
+  const [feedback,     setFeedback]     = useState("");
   const [feedbackLoading, setFeedbackLoading] = useState(false);
-  const [copied,      setCopied]      = useState(null);
-  const [lastTarget,  setLastTarget]  = useState("");
-  const [lastAngle,   setLastAngle]   = useState("");
+  const [copied,       setCopied]       = useState(null);
+  const [lastTarget,   setLastTarget]   = useState("");
+  const [lastAngle,    setLastAngle]    = useState("");
 
   const liveMatches = useMemo(() => getMatches(target), [target]);
 
-  useEffect(() => {
-    if (!useHardcoded) {
-      if (rememberKey && apiKey.trim()) localStorage.setItem(STORAGE_KEY, apiKey.trim());
-      else if (!rememberKey) localStorage.removeItem(STORAGE_KEY);
-    }
-  }, [apiKey, rememberKey, useHardcoded]);
+  const targetPlaceholder = {
+    brand:      "e.g. Therabody, Gymshark, Fabletics",
+    competitor: "e.g. Okendo customer in beauty, PowerReviews user",
+    other:      "e.g. Bazaarvoice customers in apparel, DTC brands $50M+",
+  }[targetType];
 
-  const resolvedKey = useHardcoded ? HARDCODED_API_KEY : apiKey;
-
-  async function callAPI(messages, matches) {
-    if (!resolvedKey.trim()) throw new Error("Please enter your Anthropic API key.");
+  async function callAPI(messages) {
+    if (!resolvedKey) throw new Error("No API key found. Add your key to HARDCODED_API_KEY in the file.");
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": resolvedKey.trim(),
+        "x-api-key": resolvedKey,
         "anthropic-version": "2023-06-01",
         "anthropic-dangerous-direct-browser-access": "true",
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
-        max_tokens: 3000,
-        system: buildSystem(matches || []),
+        max_tokens: 3500,
+        system: buildSystem(liveMatches, useLookalikes, targetType, audience, sender),
         messages,
       }),
     });
@@ -390,20 +502,21 @@ function Slinger() {
 
   async function generate() {
     setError("");
-    if (!resolvedKey.trim()) { setError("Please enter your Anthropic API key."); return; }
-    if (!target.trim()) { setError("Please enter a brand, brand list, or segment."); return; }
-    if (!angle)         { setError("Please select an angle."); return; }
+    if (!target.trim())  { setError("Please enter a target."); return; }
+    if (!audience)       { setError("Please select an audience type."); return; }
+    if (!sender)         { setError("Please select a sender persona."); return; }
+    if (!angle)          { setError("Please select an angle."); return; }
     setLastTarget(target.trim());
     setLastAngle(angle);
     setStep("loading");
     const userMsg = {
       role: "user",
-      content: `Write a ${count}-email outbound sequence targeting: ${target}\nAngle: ${angle}${context ? `\nAdditional context: ${context}` : ""}\n\nWrite all ${count} emails now. Follow the output format exactly.`,
+      content: `Write a ${count}-email outbound sequence.\nTarget type: ${targetType}\nTarget: ${target}\nAngle: ${angle}\nAudience: ${audience === "exec" ? "Exec-focused (high-level, business outcomes only, no features)" : "User-focused (feature-level, workflow detail)"}\nSender persona: ${sender}${context ? `\nAdditional context: ${context}` : ""}\n\nWrite all ${count} emails now. Follow the output format exactly.`,
     };
     try {
-      const text = await callAPI([userMsg], liveMatches);
+      const text = await callAPI([userMsg]);
       const parsed = parseResponse(text);
-      if (!parsed.emails.length) throw new Error("Couldn't parse emails from response. Try again.");
+      if (!parsed.emails.length) throw new Error("Couldn't parse emails. Try again.");
       setSubjects(parsed.subjects);
       setEmails(parsed.emails);
       setSelSub(0);
@@ -411,7 +524,7 @@ function Slinger() {
       setFeedback("");
       setStep("results");
     } catch (e) {
-      setError(e.message || "Something went wrong. Please try again.");
+      setError(e.message || "Something went wrong.");
       setStep("form");
     }
   }
@@ -420,14 +533,14 @@ function Slinger() {
     if (!feedback.trim()) return;
     setFeedbackLoading(true);
     setError("");
-    const subjectBlock  = subjects.map((s, i) => `SUBJECT_${i + 1}: ${s}`).join("\n");
+    const subjectBlock  = subjects.map((s, i) => `SUBJECT_${i+1}: ${s}`).join("\n");
     const currentEmails = emails.map(e => `EMAIL_${e.num}:\n${e.body}`).join("\n\n");
     const feedbackMsg = {
       role: "user",
-      content: `Current output:\n${subjectBlock}\n\n${currentEmails}\n\nFeedback: ${feedback}\n\nRewrite applying this feedback. Keep everything that works. Use the exact same output format.`,
+      content: `Current output:\n${subjectBlock}\n\n${currentEmails}\n\nFeedback: ${feedback}\n\nRewrite applying this feedback. Keep what works. Use the exact same output format.`,
     };
     try {
-      const text = await callAPI([...history, feedbackMsg], liveMatches);
+      const text = await callAPI([...history, feedbackMsg]);
       const parsed = parseResponse(text);
       if (!parsed.emails.length) throw new Error("Couldn't parse the rewrite. Try again.");
       setSubjects(parsed.subjects);
@@ -466,74 +579,92 @@ function Slinger() {
         </div>
         <div>
           <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.02em", color: Y.navy, lineHeight: 1.2 }}>Slinger 3000</div>
-          <div style={{ fontSize: 12, color: Y.textMuted }}>Reviews · Loyalty · UGC · AI Discoverability · dynamic matching</div>
+          <div style={{ fontSize: 12, color: Y.textMuted }}>Reviews ¬∑ Loyalty ¬∑ UGC ¬∑ AI Discoverability</div>
         </div>
       </div>
 
-      {/* ── LOADING ── */}
+      {/* ‚îÄ‚îÄ LOADING ‚îÄ‚îÄ */}
       {step === "loading" && <LoadingScreen target={lastTarget} angle={lastAngle} />}
 
-      {/* ── FORM ── */}
+      {/* ‚îÄ‚îÄ FORM ‚îÄ‚îÄ */}
       {step === "form" && (
         <>
-          {/* API Key — collapsed by default */}
-          {!useHardcoded && (
-            <div style={{ marginBottom: "1.4rem" }}>
-              <button onClick={() => setShowKeyField(v => !v)} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6, padding: 0 }}>
-                <span style={{ fontSize: 12, color: apiKey.trim() ? Y.green : Y.textMuted }}>
-                  {apiKey.trim() ? "✓ API key set" : "⚠ No API key"}
-                </span>
-                <span style={{ fontSize: 12, color: Y.textMuted }}>{showKeyField ? "▲" : "▼"}</span>
-              </button>
-              {showKeyField && (
-                <div style={{ marginTop: 10 }}>
-                  <div style={{ position: "relative" }}>
-                    <input
-                      type={showKey ? "text" : "password"}
-                      style={{ ...inputStyle, paddingRight: 60 }}
-                      value={apiKey}
-                      onChange={e => setApiKey(e.target.value)}
-                      placeholder="sk-ant-api03-..."
-                    />
-                    <button onClick={() => setShowKey(v => !v)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: Y.textMuted, fontFamily: "inherit" }}>
-                      {showKey ? "Hide" : "Show"}
-                    </button>
-                  </div>
-                  <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
-                    <input id="remember-key" type="checkbox" checked={rememberKey} onChange={e => setRememberKey(e.target.checked)} style={{ cursor: "pointer", accentColor: Y.navy, width: 14, height: 14 }} />
-                    <label htmlFor="remember-key" style={{ fontSize: 12, color: Y.textMuted, cursor: "pointer", userSelect: "none" }}>Remember key on this device</label>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
           {/* Target */}
-          <Field label="Target" hint="Enter a brand name, comma-separated list, or segment. Matching brands get lookalike data auto-injected.">
+          <Field label="Target type">
+            <PillGroup
+              options={[{ label: "Brand", value: "brand" }, { label: "Competitor", value: "competitor" }, { label: "Other", value: "other" }]}
+              value={targetType}
+              onChange={v => { setTargetType(v); setTarget(""); }}
+            />
+          </Field>
+
+          <Field label="Target" hint="Enter a brand name or describe your segment.">
             <textarea
               style={{ ...inputStyle, resize: "vertical", minHeight: 72 }}
               value={target}
               onChange={e => setTarget(e.target.value)}
               onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) generate(); }}
-              placeholder={"Therabody\nor: Gymshark, Fabletics, Under Armour\nor: Bazaarvoice customers in apparel"}
+              placeholder={targetPlaceholder}
             />
-            <MatchBadge matches={liveMatches} />
+            {/* Lookalike badge */}
+            {liveMatches.length > 0 && (
+              <div style={{ background: Y.offWhite, border: `1.5px solid ${Y.border}`, borderRadius: Y.radius, padding: "10px 14px", marginTop: 8 }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 8 }}>
+                  <input
+                    id="use-lookalikes"
+                    type="checkbox"
+                    checked={useLookalikes}
+                    onChange={e => setUseLookalikes(e.target.checked)}
+                    style={{ cursor: "pointer", accentColor: Y.navy, width: 14, height: 14, marginTop: 2, flexShrink: 0 }}
+                  />
+                  <label htmlFor="use-lookalikes" style={{ fontSize: 12, fontWeight: 600, color: Y.textPrimary, cursor: "pointer", userSelect: "none", lineHeight: 1.4 }}>
+                    Use these Yotpo customers as proof points in emails
+                  </label>
+                </div>
+                {liveMatches.map(({ brand, label, customers }) => (
+                  <div key={brand} style={{ fontSize: 12, color: Y.textSecondary, lineHeight: 1.7, paddingLeft: 24 }}>
+                    <strong>{brand}</strong> ‚Üí {label}: {customers.slice(0, 4).join(', ')}{customers.length > 4 ? ` +${customers.length - 4} more` : ''}
+                  </div>
+                ))}
+              </div>
+            )}
+          </Field>
+
+          {/* Audience */}
+          <Field label="Audience" hint="Who is receiving these emails?">
+            <PillGroup
+              options={[{ label: "Exec-focused", value: "exec" }, { label: "User-focused", value: "user" }]}
+              value={audience}
+              onChange={setAudience}
+            />
+            {audience && (
+              <div style={{ fontSize: 12, color: Y.textMuted, marginTop: 8, lineHeight: 1.5 }}>
+                {audience === "exec"
+                  ? "CMOs, VPs, Heads of Retention. Business outcomes only ‚Äî no feature talk."
+                  : "Marketing managers, ecommerce specialists. Feature-level detail, workflows, usability."}
+              </div>
+            )}
+          </Field>
+
+          {/* Sender */}
+          <Field label="Sender persona" hint="Who are these emails being sent from? Sets tone and voice.">
+            <PillGroup
+              options={[{ label: "Exec", value: "exec" }, { label: "Marketing", value: "marketing" }, { label: "Sales", value: "sales" }]}
+              value={sender}
+              onChange={setSender}
+            />
+            {sender && (
+              <div style={{ fontSize: 12, color: Y.textMuted, marginTop: 8, lineHeight: 1.5 }}>
+                {sender === "exec"   && "Warm, strategic, peer-to-peer. Name-drops. Signs off with first name only."}
+                {sender === "marketing" && "Confident, consultative, insight-first. Low-pressure CTAs."}
+                {sender === "sales"  && "Sharp, direct, competitive. Opens with a hook. CTAs have teeth."}
+              </div>
+            )}
           </Field>
 
           {/* Angle */}
           <Field label="Angle">
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {ANGLES.map(a => (
-                <button key={a} onClick={() => setAngle(a)} style={{
-                  padding: "9px 15px", borderRadius: Y.radius,
-                  border: angle === a ? `2px solid ${Y.navy}` : `1.5px solid ${Y.tagBorder}`,
-                  background: angle === a ? Y.navy : Y.tagBg,
-                  color: angle === a ? Y.white : Y.textPrimary,
-                  fontWeight: angle === a ? 600 : 400, fontSize: 13,
-                  cursor: "pointer", fontFamily: "inherit", letterSpacing: "-0.01em", transition: "all 0.1s",
-                }}>{a}</button>
-              ))}
-            </div>
+            <PillGroup options={ANGLES} value={angle} onChange={setAngle} />
           </Field>
 
           {/* Count */}
@@ -553,66 +684,51 @@ function Slinger() {
           </Field>
 
           {/* Context */}
-          <Field label="Additional context" optional hint="Stack, pain points, recent news, specific contacts, relevant competitors, anything else.">
+          <Field label="Additional context" optional hint="Stack, pain points, recent news, specific contacts, competitors, anything else.">
             <textarea
               style={{ ...inputStyle, resize: "vertical", minHeight: 80 }}
               value={context}
               onChange={e => setContext(e.target.value)}
-              placeholder="e.g. They use PowerReviews, expanding into Mattress Firm, ~$500M revenue, high consideration purchase..."
+              placeholder="e.g. They use PowerReviews, expanding into Mattress Firm, ~$500M revenue..."
             />
           </Field>
 
           <ErrorBox msg={error} />
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <Btn variant="primary" onClick={generate}>Generate emails →</Btn>
+            <Btn variant="primary" onClick={generate}>Generate emails ‚Üí</Btn>
             <span style={{ fontSize: 12, color: Y.textMuted }}>or Cmd+Enter</span>
           </div>
         </>
       )}
 
-      {/* ── RESULTS ── */}
+      {/* ‚îÄ‚îÄ RESULTS ‚îÄ‚îÄ */}
       {step === "results" && (
         <>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
-            <Btn variant="ghost" onClick={() => { setStep("form"); setEmails([]); setSubjects([]); }}>← Start over</Btn>
-            <Btn variant="navy" onClick={copyAll}>{copied === "all" ? "✓ Copied" : "Copy all"}</Btn>
+            <Btn variant="ghost" onClick={() => { setStep("form"); setEmails([]); setSubjects([]); }}>‚Üê Start over</Btn>
+            <Btn variant="navy" onClick={copyAll}>{copied === "all" ? "‚úì Copied" : "Copy all"}</Btn>
           </div>
 
-          {/* Context pill */}
-          {(lastTarget || lastAngle) && (
-            <div style={{ display: "flex", gap: 8, marginBottom: "1.5rem", flexWrap: "wrap" }}>
-              {lastAngle && (
-                <span style={{ fontSize: 12, fontWeight: 600, color: Y.white, background: Y.navy, border: `1.5px solid ${Y.navy}`, borderRadius: 20, padding: "3px 10px" }}>
-                  {lastAngle}
-                </span>
-              )}
-              {lastTarget && (
-                <span style={{ fontSize: 12, color: Y.textSecondary, background: Y.tagBg, border: `1.5px solid ${Y.tagBorder}`, borderRadius: 20, padding: "3px 10px" }}>
-                  {lastTarget.split(/,|\n/)[0].trim()}{lastTarget.split(/,|\n/).length > 1 ? ` +${lastTarget.split(/,|\n/).filter(s => s.trim()).length - 1} more` : ""}
-                </span>
-              )}
-            </div>
-          )}
+          {/* Context pills */}
+          <div style={{ display: "flex", gap: 8, marginBottom: "1.5rem", flexWrap: "wrap" }}>
+            {lastAngle && <span style={{ fontSize: 12, fontWeight: 600, color: Y.white, background: Y.navy, borderRadius: 20, padding: "3px 10px" }}>{lastAngle}</span>}
+            {lastTarget && <span style={{ fontSize: 12, color: Y.textSecondary, background: Y.tagBg, border: `1.5px solid ${Y.tagBorder}`, borderRadius: 20, padding: "3px 10px" }}>{lastTarget.split(/,|\n/)[0].trim()}{lastTarget.split(/,|\n/).filter(s=>s.trim()).length > 1 ? ` +${lastTarget.split(/,|\n/).filter(s=>s.trim()).length - 1} more` : ""}</span>}
+          </div>
 
           {/* Subject lines */}
           <div style={{ marginBottom: "1.75rem" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: Y.textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
-              Subject lines — click to select
-            </div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: Y.textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Subject lines ‚Äî click to select</div>
             {subjects.map((s, i) => (
               <div key={i} onClick={() => setSelSub(i)} style={{
                 padding: "12px 16px", borderRadius: Y.radius,
-                border: selSub === i ? `2px solid ${Y.coral}` : `1.5px solid ${Y.border}`,
+                border: selSub === i ? `2px solid ${Y.navy}` : `1.5px solid ${Y.border}`,
                 background: selSub === i ? Y.offWhite : Y.white,
                 cursor: "pointer", marginBottom: 8, display: "flex", gap: 14, alignItems: "flex-start", transition: "all 0.1s",
               }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: selSub === i ? Y.coral : Y.textMuted, minWidth: 18, paddingTop: 3 }}>{i + 1}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: selSub === i ? Y.navy : Y.textMuted, minWidth: 18, paddingTop: 3 }}>{i + 1}</span>
                 <span style={{ fontSize: 14, color: Y.textPrimary, lineHeight: 1.5, flex: 1 }}>{s}</span>
-                <button
-                  onClick={ev => { ev.stopPropagation(); copySubject(i, s); }}
-                  style={{ fontSize: 12, color: copied === `sub_${i}` ? Y.coral : Y.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: copied === `sub_${i}` ? 600 : 400, flexShrink: 0, paddingTop: 2 }}
-                >
-                  {copied === `sub_${i}` ? "✓" : "Copy"}
+                <button onClick={ev => { ev.stopPropagation(); copySubject(i, s); }} style={{ fontSize: 12, color: copied === `sub_${i}` ? Y.navy : Y.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: copied === `sub_${i}` ? 700 : 400, flexShrink: 0, paddingTop: 2 }}>
+                  {copied === `sub_${i}` ? "‚úì" : "Copy"}
                 </button>
               </div>
             ))}
@@ -635,8 +751,8 @@ function Slinger() {
                   <div style={{ fontSize: 11, fontWeight: 700, color: Y.navy, textTransform: "uppercase", letterSpacing: "0.08em" }}>Email {e.num}</div>
                   <div style={{ fontSize: 11, color: Y.textMuted, background: Y.offWhite, border: `1px solid ${Y.border}`, borderRadius: 4, padding: "2px 6px" }}>{readTime(e.body)}</div>
                 </div>
-                <button onClick={() => copyOne(e.num, e.body)} style={{ fontSize: 12, color: copied === e.num ? Y.coral : Y.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: copied === e.num ? 600 : 400 }}>
-                  {copied === e.num ? "✓ Copied" : "Copy"}
+                <button onClick={() => copyOne(e.num, e.body)} style={{ fontSize: 12, color: copied === e.num ? Y.navy : Y.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: copied === e.num ? 700 : 400 }}>
+                  {copied === e.num ? "‚úì Copied" : "Copy"}
                 </button>
               </div>
               <div style={{ fontSize: 14, lineHeight: 1.85, color: Y.textPrimary, whiteSpace: "pre-wrap" }}>{e.body}</div>
@@ -651,7 +767,7 @@ function Slinger() {
               value={feedback}
               onChange={e => setFeedback(e.target.value)}
               onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) applyFeedback(); }}
-              placeholder={`"Make email 2 shorter" · "Lead with the conversion stat" · "Swap proof brands for beauty companies"`}
+              placeholder={`"Make email 2 shorter" ¬∑ "Lead with the conversion stat" ¬∑ "More edge on email 1"`}
             />
             <ErrorBox msg={error} />
             <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12 }}>
