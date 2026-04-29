@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slinger 3000 · Yotpo</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>* { box-sizing: border-box; margin: 0; padding: 0; } body { background: #f5f5f5; display: flex; justify-content: center; }</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useMemo } = React;
+const STORAGE_KEY = "slinger3000_apikey";
+
+// ─── Hardcode your Anthropic API key here to hide the input field ─────────────
+// Leave as empty string "" to show the key input in the UI instead.
+const HARDCODED_API_KEY = "";
+
+// ─── Color tokens ─────────────────────────────────────────────────────────────
+const Y = {
+  navy:          "#000000",
+  coral:         "#000000",
+  white:         "#ffffff",
+  offWhite:      "#f5f5f5",
+  border:        "#e0e0e0",
+  textPrimary:   "#000000",
+  textSecondary: "#555555",
+  textMuted:     "#999999",
+  tagBg:         "#f0f0f0",
+  tagBorder:     "#d8d8d8",
+  green:         "#1a1a1a",
+  greenBg:       "#f0f0f0",
+  greenBorder:   "#cccccc",
+  radius:        "8px",
+  radiusLg:      "12px",
+};
+
+// ─── Vertical customer knowledge (from full 4,361-row Yotpo customer base) ────
+const VERTICAL_CUSTOMERS = {
+  apparel:         ["Fashion Nova","Everlane","White Fox Boutique","Lulus","Tuckernuck","Guru Denim","Faherty Brand","PacSun","cabi","Boston Proper","American Giant","Taylor Stitch"],
+  apparel_luxury:  ["Revolve","Jenni Kayne","Nadine Merabi","Citizens of Humanity","Diane Von Furstenberg","Theory","Veronica Beard","Anine Bing","Rixo","Jigsaw"],
+  activewear:      ["Patagonia","LSKD","Beyond Yoga","Senita Athletics","Alphalete","Oner Active","Jolyn","Madhappy","Buffbunny"],
+  footwear:        ["Clarks","Steve Madden","Birkenstock","Toms","KEEN","ECCO","Allbirds","OOFOS","Altra Running","Superfeet","HOKA","Cole Haan","Rothy's"],
+  beauty:          ["Proactiv","Revlon","Sol de Janeiro","AMOREPACIFIC","Rodan & Fields","IL MAKIAGE","Tarte Cosmetics","Thrive Causemetics","Olive and June","Dermalogica","Tatcha","Glossier","Credo Beauty","Primally Pure","True Botanicals","Supergoop","Beekman 1802","Sally Beauty","Beauty Bay","Chantecaille","Bondi Boost","Peach and Lily"],
+  home:            ["IKEA","Ruggable","Brooklinen","The White Company","Resident Home","Casper","Leesa","Serena & Lily","Peacock Alley","simplehuman","OXO","Our Place","Boll & Branch","MacKenzie-Childs","Zwilling","Magnolia"],
+  outdoor:         ["Revelyst","Stanley","KUIU","Backcountry","Patagonia","Mammut","Helly Hansen","Rather Outdoors","Sea to Summit","The North Face","Osprey","Klean Kanteen","RTIC"],
+  wellness:        ["Bonafide Health","HUM Nutrition","Love Wellness","Thorne Research","Alani Nutrition","Pure Formulas","Seed Health","Ancient Nutrition","JSHealth"],
+  recovery:        ["Hyperice","BLACKROLL","Wahoo Fitness","Peloton","Compex"],
+  intimates:       ["THINX","Bare Necessities","LASCANA","Spanx","Knix","Hunkemöller","Chantelle","ThirdLove","Bravissimo","Hanky Panky"],
+  jewelry:         ["PANDORA","Mejuri","ASTRID & MIYU","James Avery","Urban Body Jewelry","Effy"],
+  eyewear:         ["Zenni Optical","Goodr","Knockaround","Pair Eyewear","Smith Optics"],
+  food_bev:        ["Black Rifle Coffee","David's Tea","The Republic of Tea","Laird Superfood","King Arthur Baking","Dylan's Candy Bar","Baked by Melissa"],
+  pet:             ["Pet Honesty","The Honest Kitchen","Open Farm","Fullmoon Pet"],
+  tech:            ["Cedar Electronics","CASIO","Universal Audio","Lorex Technology","Shokz"],
+  gifts:           ["Gourmet Gift Baskets","Printfly"],
+  dept_store:      ["Selfridges","David Jones","Fenwick","Marks & Spencer"],
+};
+
+// ─── Known brand → vertical mapping ──────────────────────────────────────────
+const KNOWN_BRANDS = {"fashion nova":"apparel","everlane":"apparel","tuckernuck":"apparel","white fox":"apparel","lulus":"apparel","guru denim":"apparel","ministry of supply":"apparel","faherty":"apparel","taylor stitch":"apparel","pacsun":"apparel","pacific sunwear":"apparel","american giant":"apparel","cabi":"apparel","madewell":"apparel","j.crew":"apparel","banana republic":"apparel","gap":"apparel","old navy":"apparel","uniqlo":"apparel","h&m":"apparel","boohoo":"apparel","na-kd":"apparel","cotton on":"apparel","superdry":"apparel","pepe jeans":"apparel","guess":"apparel","american eagle":"apparel","aritzia":"apparel","revolve":"apparel_luxury","jenni kayne":"apparel_luxury","nadine merabi":"apparel_luxury","citizens of humanity":"apparel_luxury","diane von furstenberg":"apparel_luxury","theory":"apparel_luxury","veronica beard":"apparel_luxury","anine bing":"apparel_luxury","rixo":"apparel_luxury","jigsaw":"apparel_luxury","ganni":"apparel_luxury","tory burch":"apparel_luxury","ralph lauren":"apparel_luxury","l'agence":"apparel_luxury","sunspel":"apparel_luxury","patagonia":"activewear","beyond yoga":"activewear","senita athletics":"activewear","lskd":"activewear","jolyn":"activewear","madhappy":"activewear","alphalete":"activewear","buffbunny":"activewear","oner active":"activewear","gymshark":"activewear","fabletics":"activewear","under armour":"activewear","gildan":"activewear","steven madden":"footwear","steve madden":"footwear","clarks":"footwear","birkenstock":"footwear","toms":"footwear","hoka":"footwear","allbirds":"footwear","oofos":"footwear","altra running":"footwear","superfeet":"footwear","bearpaw":"footwear","keen":"footwear","ecco":"footwear","cole haan":"footwear","rothy's":"footwear","skechers":"footwear","hey dude":"footwear","crocs":"footwear","fila":"footwear","ariat":"footwear","red wing":"footwear","sam edelman":"footwear","tamaris":"footwear","hush puppies":"footwear","timberland":"footwear","merrell":"footwear","saucony":"footwear","brooks running":"footwear","asics":"footwear","new balance":"footwear","vans":"footwear","sol de janeiro":"beauty","amorepacific":"beauty","proactiv":"beauty","revlon":"beauty","rodan":"beauty","beekman":"beauty","thrive causemetics":"beauty","olive and june":"beauty","credo beauty":"beauty","tatcha":"beauty","glossier":"beauty","milk makeup":"beauty","true botanicals":"beauty","primally pure":"beauty","dermalogica":"beauty","tarte":"beauty","il makiage":"beauty","supergoop":"beauty","fenty beauty":"beauty","sally beauty":"beauty","beauty bay":"beauty","chantecaille":"beauty","kiehl":"beauty","wella":"beauty","bondi boost":"beauty","peach and lily":"beauty","spacenk":"beauty","space nk":"beauty","bath & body works":"beauty","rituals":"beauty","we are wild":"beauty","uklash":"beauty","hismile":"beauty","nars":"beauty","urban decay":"beauty","brooklinen":"home","casper":"home","avocado":"home","ruggable":"home","resident home":"home","leesa":"home","simplehuman":"home","our place":"home","oxo":"home","ikea":"home","serena & lily":"home","peacock alley":"home","boll & branch":"home","the white company":"home","mackenzie-childs":"home","zwilling":"home","joseph joseph":"home","magnolia":"home","pottery barn":"home","west elm":"home","crate and barrel":"home","cb2":"home","williams sonoma":"home","lenox":"home","calphalon":"home","kitchenaid":"home","keurig":"home","instant pot":"home","vitamix":"home","westwing":"home","furniture village":"home","revelyst":"outdoor","stanley":"outdoor","kuiu":"outdoor","backcountry":"outdoor","mammut":"outdoor","helly hansen":"outdoor","rather outdoors":"outdoor","sea to summit":"outdoor","the north face":"outdoor","osprey":"outdoor","klean kanteen":"outdoor","arc'teryx":"outdoor","rains":"outdoor","lands' end":"outdoor","yeti":"outdoor","big green egg":"outdoor","bonafide health":"wellness","hum nutrition":"wellness","love wellness":"wellness","thorne":"wellness","alani nutrition":"wellness","pure formulas":"wellness","seed health":"wellness","huel":"wellness","hyperice":"recovery","blackroll":"recovery","compex":"recovery","wahoo fitness":"recovery","peloton":"recovery","therabody":"recovery","thinx":"intimates","knix":"intimates","harper wilde":"intimates","bare necessities":"intimates","lascana":"intimates","spanx":"intimates","hunkemoller":"intimates","chantelle":"intimates","thirdlove":"intimates","bravissimo":"intimates","hanky panky":"intimates","victoria's secret":"intimates","jockey":"intimates","meundies":"intimates","ann summers":"intimates","pandora":"jewelry","mejuri":"jewelry","urban body jewelry":"jewelry","astrid & miyu":"jewelry","james avery":"jewelry","effy":"jewelry","thomas sabo":"jewelry","brilliant earth":"jewelry","goodr":"eyewear","knockaround":"eyewear","zenni":"eyewear","pair eyewear":"eyewear","smith optics":"eyewear","warby parker":"eyewear","black rifle coffee":"food_bev","david's tea":"food_bev","republic of tea":"food_bev","laird superfood":"food_bev","king arthur":"food_bev","dylan's candy":"food_bev","baked by melissa":"food_bev","nespresso":"food_bev","pet honesty":"pet","the honest kitchen":"pet","open farm":"pet","petbarn":"pet","cedar electronics":"tech","casio":"tech","universal audio":"tech","lorex":"tech","logitech":"tech","bose":"tech","shokz":"tech","gourmet gift baskets":"gifts","printfly":"gifts","shutterfly":"gifts","customink":"gifts","selfridges":"dept_store","david jones":"dept_store","fenwick":"dept_store","marks and spencer":"dept_store","myer":"dept_store"};
+
+// ─── Keyword fallback ─────────────────────────────────────────────────────────
+const KEYWORDS = [
+  ["footwear",   ["shoe","boot","sneaker","sandal","slipper","heel","loafer","runner","footwear"]],
+  ["beauty",     ["beauty","cosmetic","skincare","makeup","serum","moistur","cleanser","fragrance","shampoo","conditioner","nail","lash","brow"]],
+  ["activewear", ["activewear","athletic","gym","fitness","yoga","cycling","training","workout"]],
+  ["home",       ["bedding","mattress","pillow","cookware","decor","candle","towel","rug","curtain","furniture","sleep"]],
+  ["outdoor",    ["outdoor","camp","hike","hunt","fish","trail","mountain","adventure","tackle","archery","ski"]],
+  ["wellness",   ["supplement","vitamin","protein","nutrition","collagen","probiotic","herbal"]],
+  ["food_bev",   ["coffee","tea","food","drink","beverage","snack","chocolate","candy","meal"]],
+  ["pet",        ["pet","dog","cat","canine","feline","paw"]],
+  ["jewelry",    ["jewelry","jewel","ring","necklace","bracelet","earring","diamond","gem"]],
+  ["tech",       ["electronic","audio","headphone","speaker","gaming","gadget"]],
+  ["intimates",  ["lingerie","intimate","underwear","bra","shapewear","swimwear","bikini"]],
+  ["apparel",    ["apparel","clothing","fashion","wear","dress","shirt","jeans","denim","boutique"]],
+];
+
+// ─── Vertical inference ───────────────────────────────────────────────────────
+function inferVertical(brandName) {
+  const q = brandName.trim().toLowerCase();
+  for (const [k, v] of Object.entries(KNOWN_BRANDS)) {
+    if (q.includes(k) || k.includes(q)) return v;
+  }
+  for (const [vertical, kws] of KEYWORDS) {
+    if (kws.some(kw => q.includes(kw))) return vertical;
+  }
+  return null;
+}
+
+const VERTICAL_LABELS = {
+  apparel: "Apparel & Fashion", apparel_luxury: "Luxury Fashion",
+  activewear: "Activewear", footwear: "Footwear", beauty: "Beauty & Skincare",
+  home: "Home & Sleep", outdoor: "Outdoor & Sports", wellness: "Wellness & Nutrition",
+  recovery: "Sports Recovery", intimates: "Intimates & Underwear",
+  jewelry: "Jewelry", eyewear: "Eyewear", food_bev: "Food & Beverage",
+  pet: "Pet", tech: "Tech & Electronics", gifts: "Gifts",
+  dept_store: "Department Store",
+};
+
+function getMatches(targetText) {
+  const brands = targetText.split(/,|\n/).map(s => s.trim()).filter(Boolean);
+  return brands.map(brand => {
+    const vertical = inferVertical(brand);
+    if (!vertical) return null;
+    const customers = VERTICAL_CUSTOMERS[vertical] || [];
+    return { brand, vertical, label: VERTICAL_LABELS[vertical] || vertical, customers };
+  }).filter(Boolean);
+}
+
+// ─── Dynamic system prompt builder ───────────────────────────────────────────
+function buildSystem(matches) {
+  const proofSection = matches.length > 0
+    ? `━━━ MATCHED YOTPO CUSTOMERS (USE THESE AS PRIMARY PROOF POINTS) ━━━
+${matches.map(({ brand, label, customers }) =>
+  `${brand} → ${label}: ${customers.slice(0,6).join(', ')}`
+).join('\n')}
+
+These are confirmed Yotpo customers in the same vertical as your target. Use 2-3 of the most recognizable ones as proof points. Match brand tier carefully.
+
+━━━ ADDITIONAL YOTPO CUSTOMER KNOWLEDGE ━━━`
+    : `━━━ YOTPO CUSTOMER KNOWLEDGE ━━━`;
+
+  return `You are an expert B2B email copywriter for Yotpo — an ecommerce marketing platform for reviews, loyalty, UGC, and AI discoverability. Yotpo's products are: Reviews, Loyalty & Referrals, Visual UGC, and AI Discoverability (new). Yotpo does NOT have email marketing or SMS marketing. Yotpo integrates natively with Klaviyo and Attentive. You write outbound cold email sequences for Alex Rosenblum, Lifecycle Product Marketing Manager at Yotpo.
+
+${proofSection}
+Reference these brands when writing proof points. Match them to the target brand's vertical and positioning.
+
+APPAREL & FASHION: Fashion Nova, Everlane, White Fox Boutique, Lulus, Tuckernuck, Guru Denim, Faherty Brand, PacSun
+LUXURY FASHION: Revolve, Jenni Kayne, Nadine Merabi, Citizens of Humanity, Diane Von Furstenberg, Theory
+ACTIVEWEAR: LSKD, Beyond Yoga, Senita Athletics, Athletic Propulsion Labs, Jolyn, Madhappy, Patagonia
+FOOTWEAR: Clarks, Steve Madden, Birkenstock, Toms, KEEN, ECCO, Allbirds, OOFOS, Altra Running, Superfeet, HOKA (via Deckers)
+BEAUTY & SKINCARE: Proactiv, Revlon, Sol de Janeiro, AMOREPACIFIC, Rodan & Fields, IL MAKIAGE, Tarte Cosmetics, Thrive Causemetics, Olive and June, Dermalogica, Tatcha, Glossier, Credo Beauty, Primally Pure, True Botanicals, Supergoop, Beekman 1802
+HOME & SLEEP: IKEA, Ruggable, Brooklinen, The White Company, Resident Home (Nectar/DreamCloud), Casper, Leesa (3Z Brands), Serena & Lily, Peacock Alley, simplehuman, OXO, Our Place, Boll & Branch
+OUTDOOR & SPORTS: Revelyst, Stanley, KUIU, Backcountry, Patagonia, Mammut, Rather Outdoors, Hydro Flask, Sea to Summit, The North Face, Osprey
+WELLNESS & NUTRITION: Golden Hippo, Bonafide Health, HUM Nutrition, Love Wellness, Thorne Research, Alani Nutrition
+SPORTS RECOVERY: Hyperice, BLACKROLL, Wahoo Fitness, Peloton, Compex
+INTIMATES & UNDERWEAR: THINX, Bare Necessities, LASCANA, Spanx, Knix, Hunkemöller, Chantelle
+JEWELRY: PANDORA, Mejuri, ASTRID & MIYU, James Avery, Urban Body Jewelry
+EYEWEAR: Zenni Optical, Goodr, Knockaround, Pair Eyewear
+FOOD & BEVERAGE: Black Rifle Coffee, David's Tea, The Republic of Tea, Laird Superfood
+PET: Pet Honesty, The Honest Kitchen, Open Farm
+TECH & ELECTRONICS: Cedar Electronics, CASIO, Universal Audio, Lorex Technology
+GIFTS: Gourmet Gift Baskets, Printfly
+
+Always pick 2-3 proof brands that are genuinely close matches in vertical AND brand tier.
+
+━━━ COMPETITOR INTELLIGENCE ━━━
+PowerReviews — G2: 5/10. Weaknesses: poor display customization, no AI features, weak retail syndication, slow roadmap.
+Bazaarvoice — G2: 5/10. Weaknesses: expensive, slow implementation, legacy enterprise feel, no loyalty, no UGC, no AI discoverability.
+Okendo — lighter weight, lacks AI features, no Visual UGC, weak loyalty integration, Shopify-heavy. Klaviyo also just launched their own reviews product, putting Okendo customers in a fragile position. Yotpo + Klaviyo is a stronger pairing than Okendo + Klaviyo because Yotpo's native Klaviyo integration is deeper — reviews trigger flows automatically — and Yotpo adds Loyalty and Visual UGC that Okendo can't match.
+Feefo — mostly UK/EU, weak US integrations, limited social proof tools.
+Stamped — smaller, less mature, limited enterprise features.
+LoyaltyLion — strong for quick setup and SMB launch, but limited depth for optimization at scale. Key weaknesses: basic segmentation vs. Yotpo's 44+ attribute segmentation; less transparent attribution vs. Yotpo's conservative redeemer-based model (CFO-trustworthy); template-based customization vs. Yotpo's no-code + API-driven flexibility; primarily Shopify-centric vs. Yotpo's multi-platform, global support; tiered support vs. Yotpo's dedicated CSM. Core message: "LoyaltyLion helps you launch — Yotpo helps you evolve." Use discovery questions to expose gaps: "What % of your points are actually being redeemed?" / "When did your loyalty program last meaningfully evolve?" / "If your CFO asked you to defend loyalty ROI, how confident would you feel?" Real-world pain: brands report points accumulating with no redemptions, no way to prove ROI, programs going invisible. Yotpo's advantage = data → segmentation → activation in one system.
+
+When writing competitor displacement emails, name their platform, cite the G2 score if relevant, and name 2-3 Yotpo customers in the same vertical.
+
+━━━ KEY STATS BY ANGLE ━━━
+Reviews: 20% higher review submission rate with Smart Prompts. Brands that switch to Yotpo see 35% higher conversion on average. Smart Prompts ask contextual post-purchase questions (sleep position, skin type, fit) that produce richer, more useful reviews.
+Syndication: Yotpo auto-syndicates reviews to retail partner PDPs (Nordstrom, Mattress Firm, REI, etc.). PowerReviews and Bazaarvoice don't do this cleanly.
+Loyalty: Yotpo Loyalty integrates natively with Reviews and Visual UGC — no third-party stitching. One platform, one data model. Brands can reward customers for leaving reviews and submitting photos/videos, driving a repurchase flywheel.
+Visual UGC: Yotpo collects and displays customer photos and videos alongside reviews. UGC can be syndicated to retail partners and used in paid social. Competitors like Okendo have weaker UGC capabilities.
+AI Discoverability: Yotpo's newest product. 50% of shoppers now use AI tools (ChatGPT, Perplexity, Google AI Overviews) to research purchases. Yotpo AI Review Summaries drive a 5.4% lift in conversion and feed structured review content into AI shopping answers. Queries like "best [product] for [use case]" pull Yotpo review data directly into AI results.
+Integrations: Yotpo integrates natively with Klaviyo (reviews trigger Klaviyo email flows automatically), Attentive, Google Shopping (review feed sync for star ratings in PLAs), Meta, Salesforce Commerce Cloud, and Shopify Plus. Do NOT say Yotpo has its own email or SMS product — it does not. Yotpo + Klaviyo together is a stronger stack than Okendo + Klaviyo because the Reviews-to-Klaviyo integration is deeper and native.
+Contract Buyout: Yotpo has a formal buyout program. Brands don't need to wait out a bad contract.
+Win-back: Reference the specific gap that caused the churn. Lead with what's changed on the product side.
+
+━━━ TONE AND STYLE RULES ━━━
+Follow these exactly. They are non-negotiable.
+
+- Emails must be readable in 15 seconds. Short. Punchy. Every sentence earns its place.
+- Email 1 opens with a one-sentence human intro: who Alex is and why she's writing. Example: "I'm Alex, I work on product marketing at Yotpo, and I'm reaching out to a handful of brands we think could be a strong fit." Keep it natural, not corporate.
+- After the intro, make ONE specific point. One. Not three. Not a list.
+- Each follow-up email introduces one new angle, stat, or proof point. Never repeat what was already said in a previous email.
+- The final email is 3-5 sentences. Low pressure. Easy out. Something like "last one from me" energy.
+- Never use em-dashes. Use commas or periods instead.
+- No binary setups, contrast framing, or rhetorical reversals. No "not this, but that" phrasing.
+- Keep it specific and concrete. One clear point per paragraph with a real detail.
+- Paragraphs are 1-3 sentences. Never longer.
+- No bullet lists unless there are exactly 3 items and prose would genuinely be harder to read.
+- Never use: "synergies", "leverage", "unlock", "game-changer", "revolutionize", "I wanted to reach out", "hope this finds you well", "touch base", "circle back".
+- All emails in a series share the SAME subject line. Do not write a new subject per email.
+- Sign off: Alex / Lifecycle Product Marketing Manager, Yotpo
+- Use {{First Name}} and {{Account Name}} as personalization tokens.
+
+━━━ OUTPUT FORMAT ━━━
+Follow this format exactly. No deviations, no extra headers, no markdown.
+
+SUBJECT_1: [subject line option 1]
+SUBJECT_2: [subject line option 2]
+SUBJECT_3: [subject line option 3]
+SUBJECT_4: [subject line option 4]
+SUBJECT_5: [subject line option 5]
+
+EMAIL_1:
+[full email body]
+
+EMAIL_2:
+[full email body]
+
+EMAIL_3:
+[full email body]
+
+(continue for however many emails were requested)`;
+}
+
+// ─── Angles ───────────────────────────────────────────────────────────────────
+const ANGLES = [
+  "Competitor Displacement","AI Discoverability","Reviews",
+  "Loyalty","Visual UGC","Integrations","Syndication","Win-back","Contract Buyout",
+];
+
+// ─── Parse response ───────────────────────────────────────────────────────────
+function parseResponse(text) {
+  const subjects = [];
+  for (let i = 1; i <= 5; i++) {
+    const m = text.match(new RegExp(`SUBJECT_${i}:\\s*(.+)`, "i"));
+    if (m) subjects.push(m[1].trim());
+  }
+  const parts = text.split(/EMAIL_(\d+):\s*/i);
+  const emails = [];
+  for (let i = 1; i < parts.length; i += 2) {
+    const num = parseInt(parts[i]);
+    const body = (parts[i + 1] || "").trim();
+    if (body) emails.push({ num, body });
+  }
+  return { subjects, emails };
+}
+
+// ─── Read time estimate ───────────────────────────────────────────────────────
+function readTime(text) {
+  const words = text.trim().split(/\s+/).length;
+  const seconds = Math.round((words / 238) * 60);
+  return seconds < 60 ? `${seconds}s read` : `${Math.round(seconds / 60)}m read`;
+}
+
+// ─── Shared styles ────────────────────────────────────────────────────────────
+const inputStyle = {
+  width: "100%", fontSize: 14, padding: "10px 14px",
+  border: `1.5px solid ${Y.border}`, borderRadius: Y.radius,
+  background: Y.white, color: Y.textPrimary, outline: "none",
+  fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box",
+};
+
+function Btn({ children, variant = "primary", disabled, onClick, style = {} }) {
+  return (
+    <button
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 8,
+        padding: "11px 22px", borderRadius: Y.radius,
+        border: variant === "ghost" ? `1.5px solid ${Y.border}` : "none",
+        background: variant === "primary" ? Y.coral : variant === "navy" ? Y.navy : "transparent",
+        color: variant === "ghost" ? Y.textSecondary : Y.white,
+        fontSize: 14, fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer",
+        fontFamily: "inherit", opacity: disabled ? 0.55 : 1,
+        letterSpacing: "-0.01em", transition: "opacity 0.1s", ...style,
+      }}
+      disabled={disabled} onClick={onClick}
+    >{children}</button>
+  );
+}
+
+function Field({ label, hint, optional, children }) {
+  return (
+    <div style={{ marginBottom: "1.4rem" }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: Y.textPrimary, marginBottom: 6, display: "flex", gap: 6, alignItems: "center" }}>
+        {label}
+        {optional && <span style={{ fontSize: 12, fontWeight: 400, color: Y.textMuted }}>optional</span>}
+      </div>
+      {hint && <div style={{ fontSize: 12, color: Y.textMuted, marginBottom: 6, lineHeight: 1.5 }}>{hint}</div>}
+      {children}
+    </div>
+  );
+}
+
+function Spinner({ color = "white" }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" style={{ animation: "spin 0.7s linear infinite", flexShrink: 0 }}>
+      <style>{"@keyframes spin{to{transform:rotate(360deg)}}"}</style>
+      <circle cx="7" cy="7" r="5" fill="none" stroke={color === "navy" ? "rgba(17,17,17,0.2)" : "rgba(255,255,255,0.35)"} strokeWidth="2" />
+      <path d="M7 2a5 5 0 0 1 5 5" fill="none" stroke={color === "navy" ? Y.navy : "white"} strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ErrorBox({ msg }) {
+  if (!msg) return null;
+  return (
+    <div style={{ fontSize: 13, color: "#000000", background: "#f5f5f5", border: "1.5px solid #e0e0e0", borderRadius: Y.radius, padding: "10px 14px", marginBottom: "1rem", lineHeight: 1.5 }}>
+      {msg}
+    </div>
+  );
+}
+
+// ─── Match badge ──────────────────────────────────────────────────────────────
+function MatchBadge({ matches }) {
+  if (!matches.length) return null;
+  return (
+    <div style={{ background: Y.greenBg, border: `1.5px solid ${Y.greenBorder}`, borderRadius: Y.radius, padding: "10px 14px", marginTop: 8 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: Y.green, marginBottom: 4 }}>
+        ✓ Vertical matched — Yotpo customers injecting into prompt
+      </div>
+      {matches.map(({ brand, label, customers }) => (
+        <div key={brand} style={{ fontSize: 12, color: "#333333", lineHeight: 1.6 }}>
+          <strong>{brand}</strong> → {label}: {customers.slice(0, 4).join(', ')}{customers.length > 4 ? ` +${customers.length - 4} more` : ''}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Loading screen ───────────────────────────────────────────────────────────
+function LoadingScreen({ target, angle }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "5rem 2rem", gap: 20 }}>
+      <div style={{ width: 48, height: 48, borderRadius: 14, background: Y.navy, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <svg width="22" height="22" viewBox="0 0 22 22" style={{ animation: "spin 1s linear infinite" }}>
+          <circle cx="11" cy="11" r="8" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2.5" />
+          <path d="M11 3a8 8 0 0 1 8 8" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: 16, fontWeight: 700, color: Y.navy, marginBottom: 6 }}>Slinging your emails...</div>
+        <div style={{ fontSize: 13, color: Y.textMuted }}>
+          {target && angle ? `${angle} sequence for ${target.split(/,|\n/)[0].trim()}` : "Generating your sequence"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+function Slinger() {
+  const useHardcoded = HARDCODED_API_KEY.trim().length > 0;
+  const [apiKey,      setApiKey]      = useState(() => useHardcoded ? HARDCODED_API_KEY : (localStorage.getItem(STORAGE_KEY) || ""));
+  const [showKeyField, setShowKeyField] = useState(false);
+  const [showKey,     setShowKey]     = useState(false);
+  const [rememberKey, setRememberKey] = useState(() => !!localStorage.getItem(STORAGE_KEY));
+  const [target,      setTarget]      = useState("");
+  const [angle,       setAngle]       = useState("");
+  const [count,       setCount]       = useState(3);
+  const [context,     setContext]     = useState("");
+  const [step,        setStep]        = useState("form");
+  const [error,       setError]       = useState("");
+  const [subjects,    setSubjects]    = useState([]);
+  const [selSub,      setSelSub]      = useState(0);
+  const [emails,      setEmails]      = useState([]);
+  const [history,     setHistory]     = useState([]);
+  const [feedback,    setFeedback]    = useState("");
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [copied,      setCopied]      = useState(null);
+  const [lastTarget,  setLastTarget]  = useState("");
+  const [lastAngle,   setLastAngle]   = useState("");
+
+  const liveMatches = useMemo(() => getMatches(target), [target]);
+
+  useEffect(() => {
+    if (!useHardcoded) {
+      if (rememberKey && apiKey.trim()) localStorage.setItem(STORAGE_KEY, apiKey.trim());
+      else if (!rememberKey) localStorage.removeItem(STORAGE_KEY);
+    }
+  }, [apiKey, rememberKey, useHardcoded]);
+
+  const resolvedKey = useHardcoded ? HARDCODED_API_KEY : apiKey;
+
+  async function callAPI(messages, matches) {
+    if (!resolvedKey.trim()) throw new Error("Please enter your Anthropic API key.");
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": resolvedKey.trim(),
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 3000,
+        system: buildSystem(matches || []),
+        messages,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || `API error ${res.status}`);
+    return data.content.map(b => b.type === "text" ? b.text : "").join("");
+  }
+
+  async function generate() {
+    setError("");
+    if (!resolvedKey.trim()) { setError("Please enter your Anthropic API key."); return; }
+    if (!target.trim()) { setError("Please enter a brand, brand list, or segment."); return; }
+    if (!angle)         { setError("Please select an angle."); return; }
+    setLastTarget(target.trim());
+    setLastAngle(angle);
+    setStep("loading");
+    const userMsg = {
+      role: "user",
+      content: `Write a ${count}-email outbound sequence targeting: ${target}\nAngle: ${angle}${context ? `\nAdditional context: ${context}` : ""}\n\nWrite all ${count} emails now. Follow the output format exactly.`,
+    };
+    try {
+      const text = await callAPI([userMsg], liveMatches);
+      const parsed = parseResponse(text);
+      if (!parsed.emails.length) throw new Error("Couldn't parse emails from response. Try again.");
+      setSubjects(parsed.subjects);
+      setEmails(parsed.emails);
+      setSelSub(0);
+      setHistory([{ role: "user", content: userMsg.content }, { role: "assistant", content: text }]);
+      setFeedback("");
+      setStep("results");
+    } catch (e) {
+      setError(e.message || "Something went wrong. Please try again.");
+      setStep("form");
+    }
+  }
+
+  async function applyFeedback() {
+    if (!feedback.trim()) return;
+    setFeedbackLoading(true);
+    setError("");
+    const subjectBlock  = subjects.map((s, i) => `SUBJECT_${i + 1}: ${s}`).join("\n");
+    const currentEmails = emails.map(e => `EMAIL_${e.num}:\n${e.body}`).join("\n\n");
+    const feedbackMsg = {
+      role: "user",
+      content: `Current output:\n${subjectBlock}\n\n${currentEmails}\n\nFeedback: ${feedback}\n\nRewrite applying this feedback. Keep everything that works. Use the exact same output format.`,
+    };
+    try {
+      const text = await callAPI([...history, feedbackMsg], liveMatches);
+      const parsed = parseResponse(text);
+      if (!parsed.emails.length) throw new Error("Couldn't parse the rewrite. Try again.");
+      setSubjects(parsed.subjects);
+      setEmails(parsed.emails);
+      setHistory([...history, feedbackMsg, { role: "assistant", content: text }]);
+      setFeedback("");
+    } catch (e) {
+      setError(e.message || "Something went wrong.");
+    } finally {
+      setFeedbackLoading(false);
+    }
+  }
+
+  function flash(id) { setCopied(id); setTimeout(() => setCopied(null), 2000); }
+  function copyAll() {
+    const sub  = subjects[selSub] || subjects[0] || "";
+    const body = emails.map(e => `Email ${e.num}\n${e.body}`).join("\n\n---\n\n");
+    navigator.clipboard.writeText(`Subject: ${sub}\n\n${body}`);
+    flash("all");
+  }
+  function copyOne(num, body) { navigator.clipboard.writeText(body); flash(num); }
+  function copySubject(idx, text) { navigator.clipboard.writeText(text); flash(`sub_${idx}`); }
+
+  const wrap = { maxWidth: 680, padding: "1.5rem 1rem 3rem", fontFamily: "'Inter', system-ui, sans-serif", color: Y.textPrimary, width: "100%" };
+  const card = { background: Y.white, border: `1.5px solid ${Y.border}`, borderRadius: Y.radiusLg, padding: "1.25rem 1.5rem", marginBottom: "1rem" };
+  const divider = { height: 1, background: Y.border, marginBottom: "1.5rem" };
+
+  return (
+    <div style={wrap}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "2rem" }}>
+        <div style={{ width: 38, height: 38, borderRadius: 10, background: Y.navy, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M4 6h12M4 10h8M4 14h5" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+        </div>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.02em", color: Y.navy, lineHeight: 1.2 }}>Slinger 3000</div>
+          <div style={{ fontSize: 12, color: Y.textMuted }}>Reviews · Loyalty · UGC · AI Discoverability · dynamic matching</div>
+        </div>
+      </div>
+
+      {/* ── LOADING ── */}
+      {step === "loading" && <LoadingScreen target={lastTarget} angle={lastAngle} />}
+
+      {/* ── FORM ── */}
+      {step === "form" && (
+        <>
+          {/* API Key — collapsed by default */}
+          {!useHardcoded && (
+            <div style={{ marginBottom: "1.4rem" }}>
+              <button onClick={() => setShowKeyField(v => !v)} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6, padding: 0 }}>
+                <span style={{ fontSize: 12, color: apiKey.trim() ? Y.green : Y.textMuted }}>
+                  {apiKey.trim() ? "✓ API key set" : "⚠ No API key"}
+                </span>
+                <span style={{ fontSize: 12, color: Y.textMuted }}>{showKeyField ? "▲" : "▼"}</span>
+              </button>
+              {showKeyField && (
+                <div style={{ marginTop: 10 }}>
+                  <div style={{ position: "relative" }}>
+                    <input
+                      type={showKey ? "text" : "password"}
+                      style={{ ...inputStyle, paddingRight: 60 }}
+                      value={apiKey}
+                      onChange={e => setApiKey(e.target.value)}
+                      placeholder="sk-ant-api03-..."
+                    />
+                    <button onClick={() => setShowKey(v => !v)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 12, color: Y.textMuted, fontFamily: "inherit" }}>
+                      {showKey ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                  <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                    <input id="remember-key" type="checkbox" checked={rememberKey} onChange={e => setRememberKey(e.target.checked)} style={{ cursor: "pointer", accentColor: Y.navy, width: 14, height: 14 }} />
+                    <label htmlFor="remember-key" style={{ fontSize: 12, color: Y.textMuted, cursor: "pointer", userSelect: "none" }}>Remember key on this device</label>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Target */}
+          <Field label="Target" hint="Enter a brand name, comma-separated list, or segment. Matching brands get lookalike data auto-injected.">
+            <textarea
+              style={{ ...inputStyle, resize: "vertical", minHeight: 72 }}
+              value={target}
+              onChange={e => setTarget(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) generate(); }}
+              placeholder={"Therabody\nor: Gymshark, Fabletics, Under Armour\nor: Bazaarvoice customers in apparel"}
+            />
+            <MatchBadge matches={liveMatches} />
+          </Field>
+
+          {/* Angle */}
+          <Field label="Angle">
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {ANGLES.map(a => (
+                <button key={a} onClick={() => setAngle(a)} style={{
+                  padding: "9px 15px", borderRadius: Y.radius,
+                  border: angle === a ? `2px solid ${Y.navy}` : `1.5px solid ${Y.tagBorder}`,
+                  background: angle === a ? Y.navy : Y.tagBg,
+                  color: angle === a ? Y.white : Y.textPrimary,
+                  fontWeight: angle === a ? 600 : 400, fontSize: 13,
+                  cursor: "pointer", fontFamily: "inherit", letterSpacing: "-0.01em", transition: "all 0.1s",
+                }}>{a}</button>
+              ))}
+            </div>
+          </Field>
+
+          {/* Count */}
+          <Field label="Emails in series">
+            <div style={{ display: "flex", gap: 8 }}>
+              {[1,2,3,4,5].map(n => (
+                <button key={n} onClick={() => setCount(n)} style={{
+                  width: 44, height: 44, borderRadius: Y.radius,
+                  border: count === n ? `2px solid ${Y.navy}` : `1.5px solid ${Y.tagBorder}`,
+                  background: count === n ? Y.navy : Y.tagBg,
+                  color: count === n ? Y.white : Y.textPrimary,
+                  fontWeight: count === n ? 600 : 400, fontSize: 15,
+                  cursor: "pointer", fontFamily: "inherit", transition: "all 0.1s",
+                }}>{n}</button>
+              ))}
+            </div>
+          </Field>
+
+          {/* Context */}
+          <Field label="Additional context" optional hint="Stack, pain points, recent news, specific contacts, relevant competitors, anything else.">
+            <textarea
+              style={{ ...inputStyle, resize: "vertical", minHeight: 80 }}
+              value={context}
+              onChange={e => setContext(e.target.value)}
+              placeholder="e.g. They use PowerReviews, expanding into Mattress Firm, ~$500M revenue, high consideration purchase..."
+            />
+          </Field>
+
+          <ErrorBox msg={error} />
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <Btn variant="primary" onClick={generate}>Generate emails →</Btn>
+            <span style={{ fontSize: 12, color: Y.textMuted }}>or Cmd+Enter</span>
+          </div>
+        </>
+      )}
+
+      {/* ── RESULTS ── */}
+      {step === "results" && (
+        <>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
+            <Btn variant="ghost" onClick={() => { setStep("form"); setEmails([]); setSubjects([]); }}>← Start over</Btn>
+            <Btn variant="navy" onClick={copyAll}>{copied === "all" ? "✓ Copied" : "Copy all"}</Btn>
+          </div>
+
+          {/* Context pill */}
+          {(lastTarget || lastAngle) && (
+            <div style={{ display: "flex", gap: 8, marginBottom: "1.5rem", flexWrap: "wrap" }}>
+              {lastAngle && (
+                <span style={{ fontSize: 12, fontWeight: 600, color: Y.white, background: Y.navy, border: `1.5px solid ${Y.navy}`, borderRadius: 20, padding: "3px 10px" }}>
+                  {lastAngle}
+                </span>
+              )}
+              {lastTarget && (
+                <span style={{ fontSize: 12, color: Y.textSecondary, background: Y.tagBg, border: `1.5px solid ${Y.tagBorder}`, borderRadius: 20, padding: "3px 10px" }}>
+                  {lastTarget.split(/,|\n/)[0].trim()}{lastTarget.split(/,|\n/).length > 1 ? ` +${lastTarget.split(/,|\n/).filter(s => s.trim()).length - 1} more` : ""}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Subject lines */}
+          <div style={{ marginBottom: "1.75rem" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: Y.textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
+              Subject lines — click to select
+            </div>
+            {subjects.map((s, i) => (
+              <div key={i} onClick={() => setSelSub(i)} style={{
+                padding: "12px 16px", borderRadius: Y.radius,
+                border: selSub === i ? `2px solid ${Y.coral}` : `1.5px solid ${Y.border}`,
+                background: selSub === i ? Y.offWhite : Y.white,
+                cursor: "pointer", marginBottom: 8, display: "flex", gap: 14, alignItems: "flex-start", transition: "all 0.1s",
+              }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: selSub === i ? Y.coral : Y.textMuted, minWidth: 18, paddingTop: 3 }}>{i + 1}</span>
+                <span style={{ fontSize: 14, color: Y.textPrimary, lineHeight: 1.5, flex: 1 }}>{s}</span>
+                <button
+                  onClick={ev => { ev.stopPropagation(); copySubject(i, s); }}
+                  style={{ fontSize: 12, color: copied === `sub_${i}` ? Y.coral : Y.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: copied === `sub_${i}` ? 600 : 400, flexShrink: 0, paddingTop: 2 }}
+                >
+                  {copied === `sub_${i}` ? "✓" : "Copy"}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div style={divider} />
+
+          {subjects[selSub] && (
+            <div style={{ marginBottom: "1.5rem" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: Y.textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Selected subject line</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: Y.navy }}>{subjects[selSub]}</div>
+            </div>
+          )}
+
+          {/* Email cards */}
+          {emails.map(e => (
+            <div key={e.num} style={card}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: Y.navy, textTransform: "uppercase", letterSpacing: "0.08em" }}>Email {e.num}</div>
+                  <div style={{ fontSize: 11, color: Y.textMuted, background: Y.offWhite, border: `1px solid ${Y.border}`, borderRadius: 4, padding: "2px 6px" }}>{readTime(e.body)}</div>
+                </div>
+                <button onClick={() => copyOne(e.num, e.body)} style={{ fontSize: 12, color: copied === e.num ? Y.coral : Y.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: copied === e.num ? 600 : 400 }}>
+                  {copied === e.num ? "✓ Copied" : "Copy"}
+                </button>
+              </div>
+              <div style={{ fontSize: 14, lineHeight: 1.85, color: Y.textPrimary, whiteSpace: "pre-wrap" }}>{e.body}</div>
+            </div>
+          ))}
+
+          {/* Feedback */}
+          <div style={{ background: Y.offWhite, border: `1.5px solid ${Y.border}`, borderRadius: Y.radiusLg, padding: "1.25rem 1.5rem", marginTop: "0.5rem" }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: Y.navy, marginBottom: 10 }}>Refine these emails</div>
+            <textarea
+              style={{ ...inputStyle, resize: "vertical", minHeight: 76, background: Y.white }}
+              value={feedback}
+              onChange={e => setFeedback(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) applyFeedback(); }}
+              placeholder={`"Make email 2 shorter" · "Lead with the conversion stat" · "Swap proof brands for beauty companies"`}
+            />
+            <ErrorBox msg={error} />
+            <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12 }}>
+              <Btn variant="primary" disabled={feedbackLoading || !feedback.trim()} onClick={applyFeedback}>
+                {feedbackLoading ? <><Spinner />Rewriting...</> : "Apply feedback"}
+              </Btn>
+              <span style={{ fontSize: 12, color: Y.textMuted }}>or Cmd+Enter</span>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Slinger />);
+</script>
+</body>
+</html>
