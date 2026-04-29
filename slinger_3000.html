@@ -8,7 +8,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>* { box-sizing: border-box; margin: 0; padding: 0; } body { background: #f5f5f5; display: flex; justify-content: center; }</style>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #ECEDF0; display: flex; justify-content: center; min-height: 100vh; padding: 2rem 1rem; }
+    #root { width: 100%; display: flex; justify-content: center; align-items: flex-start; }
+  </style>
 </head>
 <body>
 <div id="root"></div>
@@ -21,21 +25,23 @@ const STORAGE_KEY = "slinger3000_apikey";
 
 // ‚îÄ‚îÄ‚îÄ Color tokens ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const Y = {
-  navy:          "#000000",
-  coral:         "#000000",
+  navy:          "#0F0F10",
+  coral:         "#0F0F10",
   white:         "#ffffff",
-  offWhite:      "#f5f5f5",
-  border:        "#e0e0e0",
-  textPrimary:   "#000000",
-  textSecondary: "#555555",
-  textMuted:     "#999999",
-  tagBg:         "#f0f0f0",
-  tagBorder:     "#d8d8d8",
+  offWhite:      "#F4F5F7",
+  border:        "#E4E5E9",
+  textPrimary:   "#0F0F10",
+  textSecondary: "#555560",
+  textMuted:     "#9A9BA8",
+  tagBg:         "#F4F5F7",
+  tagBorder:     "#E4E5E9",
   green:         "#1a1a1a",
-  greenBg:       "#f0f0f0",
-  greenBorder:   "#cccccc",
-  radius:        "8px",
-  radiusLg:      "12px",
+  greenBg:       "#F4F5F7",
+  greenBorder:   "#E4E5E9",
+  shadow:        "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06)",
+  shadowSm:      "0 1px 2px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.05)",
+  radius:        "10px",
+  radiusLg:      "14px",
 };
 
 // ‚îÄ‚îÄ‚îÄ Vertical customer knowledge ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
@@ -564,14 +570,16 @@ function Slinger() {
   function copyOne(num, body) { navigator.clipboard.writeText(body); flash(num); }
   function copySubject(idx, text) { navigator.clipboard.writeText(text); flash(`sub_${idx}`); }
 
-  const wrap = { maxWidth: 680, padding: "1.5rem 1rem 3rem", fontFamily: "'Inter', system-ui, sans-serif", color: Y.textPrimary, width: "100%" };
-  const card = { background: Y.white, border: `1.5px solid ${Y.border}`, borderRadius: Y.radiusLg, padding: "1.25rem 1.5rem", marginBottom: "1rem" };
+  const wrap = { maxWidth: 700, width: "100%", fontFamily: "'Inter', system-ui, sans-serif", color: Y.textPrimary };
+  const appCard = { background: Y.white, borderRadius: 20, boxShadow: Y.shadow, padding: "2rem 2.5rem 3rem", marginBottom: "1.5rem" };
+  const card = { background: Y.offWhite, border: `1px solid ${Y.border}`, borderRadius: Y.radiusLg, padding: "1.25rem 1.5rem", marginBottom: "1rem" };
   const divider = { height: 1, background: Y.border, marginBottom: "1.5rem" };
 
   return (
     <div style={wrap}>
+    <div style={appCard}>
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "2rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "2rem", paddingBottom: "1.5rem", borderBottom: `1px solid ${Y.border}` }}>
         <div style={{ width: 38, height: 38, borderRadius: 10, background: Y.navy, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M4 6h12M4 10h8M4 14h5" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
@@ -579,7 +587,7 @@ function Slinger() {
         </div>
         <div>
           <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.02em", color: Y.navy, lineHeight: 1.2 }}>Slinger 3000</div>
-          <div style={{ fontSize: 12, color: Y.textMuted }}>Reviews ¬∑ Loyalty ¬∑ UGC ¬∑ AI Discoverability</div>
+          <div style={{ fontSize: 12, color: Y.textMuted }}>Reviews / Loyalty / UGC / AI Discoverability</div>
         </div>
       </div>
 
@@ -695,7 +703,7 @@ function Slinger() {
 
           <ErrorBox msg={error} />
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <Btn variant="primary" onClick={generate}>Generate emails ‚Üí</Btn>
+            <Btn variant="primary" onClick={generate}>Generate emails</Btn>
             <span style={{ fontSize: 12, color: Y.textMuted }}>or Cmd+Enter</span>
           </div>
         </>
@@ -779,6 +787,7 @@ function Slinger() {
           </div>
         </>
       )}
+    </div>
     </div>
   );
 }
