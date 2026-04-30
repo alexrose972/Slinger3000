@@ -487,14 +487,15 @@ function LoadingScreen({ target, angle }) {
 
 // ‚îÄ‚îÄ‚îÄ Main component ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function Slinger() {
-  const resolvedKey = HARDCODED_API_KEY.trim() || localStorage.getItem("slinger3000_apikey") || "";
+  const [apiKey,       setApiKey]       = useState(HARDCODED_API_KEY.trim() || localStorage.getItem(STORAGE_KEY) || "");
+  const resolvedKey = HARDCODED_API_KEY.trim() || apiKey.trim();
 
   const [targetType,   setTargetType]   = useState("brand");
   const [target,       setTarget]       = useState("");
   const [useLookalikes,setUseLookalikes]= useState(true);
   const [audience,     setAudience]     = useState("");
   const [sender,       setSender]       = useState("");
-  const [angle,        setAngle]        = useState("");
+  const [angles,       setAngles]       = useState([]);
   const [count,        setCount]        = useState(3);
   const [context,      setContext]      = useState("");
   const [step,         setStep]         = useState("form");
@@ -541,16 +542,16 @@ function Slinger() {
 
   async function generate() {
     setError("");
-    if (!target.trim())  { setError("Please enter a target."); return; }
-    if (!audience)       { setError("Please select an audience type."); return; }
-    if (!sender)         { setError("Please select a sender persona."); return; }
-    if (!angle)          { setError("Please select an angle."); return; }
+    if (!target.trim())   { setError("Please enter a target."); return; }
+    if (!audience)        { setError("Please select an audience type."); return; }
+    if (!sender)          { setError("Please select a sender persona."); return; }
+    if (!angles.length)   { setError("Please select at least one angle."); return; }
     setLastTarget(target.trim());
-    setLastAngle(angle);
+    setLastAngle(angles.join(', '));
     setStep("loading");
     const userMsg = {
       role: "user",
-      content: `Write a ${count}-email outbound sequence.\nTarget type: ${targetType}\nTarget: ${target}\nAngle: ${angle}\nAudience: ${audience === "exec" ? "Exec-focused (high-level, business outcomes only, no features)" : "User-focused (feature-level, workflow detail)"}\nSender persona: ${sender}${context ? `\nAdditional context: ${context}` : ""}\n\nWrite all ${count} emails now. Follow the output format exactly.`,
+      content: `Write a ${count}-email outbound sequence.\nTarget type: ${targetType}\nTarget: ${target}\nAngle: ${angles.join(', ')}\nAudience: ${audience === "exec" ? "Exec-focused (high-level, business outcomes only, no features)" : "User-focused (feature-level, workflow detail)"}\nSender persona: ${sender}${context ? `\nAdditional context: ${context}` : ""}\n\nWrite all ${count} emails now. Follow the output format exactly.`,
     };
     try {
       const text = await callAPI([userMsg]);
@@ -630,6 +631,20 @@ function Slinger() {
       {/* ‚îÄ‚îÄ FORM ‚îÄ‚îÄ */}
       {step === "form" && (
         <>
+          {/* API Key (only shown when no key is hardcoded) */}
+          {!HARDCODED_API_KEY.trim() && (
+            <Field label="Anthropic API key" hint={apiKey ? "Key saved in browser." : "Paste your key ‚Äî it's stored locally and never sent anywhere except the Anthropic API."}>
+              <input
+                type="password"
+                style={{ ...inputStyle, fontFamily: "monospace", fontSize: 13 }}
+                value={apiKey}
+                onChange={e => { setApiKey(e.target.value); localStorage.setItem(STORAGE_KEY, e.target.value); }}
+                placeholder="sk-ant-..."
+                autoComplete="off"
+              />
+            </Field>
+          )}
+
           {/* Target */}
           <Field label="Target type">
             <PillGroup
@@ -704,8 +719,22 @@ function Slinger() {
           </Field>
 
           {/* Angle */}
-          <Field label="Angle">
-            <PillGroup options={ANGLES} value={angle} onChange={setAngle} />
+          <Field label="Angle" hint="Select one or more.">
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {ANGLES.map(a => {
+                const active = angles.includes(a);
+                return (
+                  <button key={a} onClick={() => setAngles(prev => prev.includes(a) ? prev.filter(x => x !== a) : [...prev, a])} style={{
+                    padding: "9px 16px", borderRadius: Y.radius,
+                    border: active ? `2px solid ${Y.navy}` : `1.5px solid ${Y.tagBorder}`,
+                    background: active ? Y.navy : Y.tagBg,
+                    color: active ? Y.white : Y.textPrimary,
+                    fontWeight: active ? 600 : 400, fontSize: 13,
+                    cursor: "pointer", fontFamily: "inherit", letterSpacing: "-0.01em", transition: "all 0.1s",
+                  }}>{a}</button>
+                );
+              })}
+            </div>
           </Field>
 
           {/* Count */}
