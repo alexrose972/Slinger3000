@@ -470,16 +470,77 @@ function ErrorBox({ msg }) {
 
 function LoadingScreen({ target, angle }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "5rem 2rem", gap: 20 }}>
-      <div style={{ width: 48, height: 48, borderRadius: 14, background: Y.navy, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <svg width="22" height="22" viewBox="0 0 22 22" style={{ animation: "spin 1s linear infinite" }}>
-          <circle cx="11" cy="11" r="8" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2.5" />
-          <path d="M11 3a8 8 0 0 1 8 8" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-        </svg>
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "4rem 2rem", gap: 28 }}>
+      <style>{`
+        @keyframes envFly {
+          0%    { transform: translate(0px, 0px) rotate(-10deg); opacity: 1; animation-timing-function: ease-in; }
+          28%   { transform: translate(0px, 2px) rotate(-8deg);  opacity: 1; animation-timing-function: cubic-bezier(0.2,0,0.2,1); }
+          30%   { transform: translate(0px, 0px) rotate(-10deg); opacity: 1; animation-timing-function: cubic-bezier(0.55,0,1,0.45); }
+          52%   { transform: translate(152px, -62px) rotate(22deg); opacity: 1; }
+          56%   { transform: translate(168px, -70px) rotate(26deg); opacity: 0; }
+          57%   { transform: translate(0px, 0px) rotate(-10deg); opacity: 0; animation-timing-function: ease-out; }
+          72%   { transform: translate(0px, 0px) rotate(-10deg); opacity: 1; }
+          100%  { transform: translate(0px, 0px) rotate(-10deg); opacity: 1; }
+        }
+        @keyframes bandsAnim {
+          0%, 28%  { opacity: 1; }
+          40%      { opacity: 0; }
+          70%      { opacity: 0; }
+          75%      { opacity: 1; }
+          100%     { opacity: 1; }
+        }
+        @keyframes forkSnap {
+          0%, 30%  { transform: rotate(0deg); }
+          38%      { transform: rotate(4deg); }
+          46%      { transform: rotate(-2deg); }
+          54%      { transform: rotate(1deg); }
+          62%      { transform: rotate(0deg); }
+          100%     { transform: rotate(0deg); }
+        }
+        @keyframes tensionBob {
+          0%, 100% { transform: translate(0px, 0px) rotate(-10deg); }
+          50%      { transform: translate(0px, 3px) rotate(-8deg); }
+        }
+      `}</style>
+
+      <svg width="240" height="170" viewBox="0 0 240 170">
+        {/* Slingshot — wobbles on release */}
+        <g style={{ transformOrigin: "153px 158px", animation: "forkSnap 2.8s ease-in-out infinite" }}>
+          {/* Post */}
+          <rect x="148" y="92" width="12" height="66" rx="5" fill="#7C4A1E"/>
+          {/* Left arm */}
+          <line x1="154" y1="98" x2="127" y2="46" stroke="#A0622B" strokeWidth="11" strokeLinecap="round"/>
+          {/* Right arm */}
+          <line x1="154" y1="98" x2="181" y2="46" stroke="#A0622B" strokeWidth="11" strokeLinecap="round"/>
+          {/* Tip caps */}
+          <circle cx="127" cy="46" r="7" fill="#7C4A1E"/>
+          <circle cx="181" cy="46" r="7" fill="#7C4A1E"/>
+        </g>
+
+        {/* Elastic bands */}
+        <g style={{ animation: "bandsAnim 2.8s ease-in-out infinite" }}>
+          <line x1="127" y1="46" x2="74" y2="83" stroke="#C9A96E" strokeWidth="3" strokeLinecap="round"/>
+          <line x1="181" y1="46" x2="74" y2="83" stroke="#C9A96E" strokeWidth="3" strokeLinecap="round"/>
+        </g>
+
+        {/* Envelope */}
+        <g style={{ transformOrigin: "74px 83px", animation: "envFly 2.8s ease-in-out infinite" }}>
+          {/* Body */}
+          <rect x="54" y="70" width="40" height="27" rx="3" fill="#FFFDF7" stroke="#E2CCB0" strokeWidth="1.5"/>
+          {/* Orange flap */}
+          <path d="M54,70 L74,86 L94,70 Z" fill="#F5A623"/>
+          {/* Bottom seam lines */}
+          <line x1="54" y1="97" x2="70" y2="86" stroke="#E2CCB0" strokeWidth="1"/>
+          <line x1="94" y1="97" x2="78" y2="86" stroke="#E2CCB0" strokeWidth="1"/>
+          {/* Letter lines */}
+          <line x1="62" y1="80" x2="86" y2="80" stroke="#E2CCB0" strokeWidth="1.5"/>
+          <line x1="62" y1="86" x2="80" y2="86" stroke="#E2CCB0" strokeWidth="1.5"/>
+        </g>
+      </svg>
+
       <div style={{ textAlign: "center" }}>
         <div style={{ fontSize: 16, fontWeight: 700, color: Y.navy, marginBottom: 6 }}>Slinging your emails...</div>
-        {target && angle && <div style={{ fontSize: 13, color: Y.textMuted }}>{angle} sequence for {target.split(/,|\n/)[0].trim()}</div>}
+        {target && angle && <div style={{ fontSize: 13, color: Y.textMuted }}>{angle} for {target.split(/,|\n/)[0].trim()}</div>}
       </div>
     </div>
   );
@@ -630,20 +691,6 @@ function Slinger() {
       {/* ── FORM ── */}
       {step === "form" && (
         <>
-          {/* API Key (only shown when no key is hardcoded) */}
-          {!HARDCODED_API_KEY.trim() && (
-            <Field label="Anthropic API key" hint={apiKey ? "Key saved in browser." : "Paste your key — it's stored locally and never sent anywhere except the Anthropic API."}>
-              <input
-                type="password"
-                style={{ ...inputStyle, fontFamily: "monospace", fontSize: 13 }}
-                value={apiKey}
-                onChange={e => { setApiKey(e.target.value); localStorage.setItem(STORAGE_KEY, e.target.value); }}
-                placeholder="sk-ant-..."
-                autoComplete="off"
-              />
-            </Field>
-          )}
-
           {/* Target */}
           <Field label="Target type">
             <PillGroup
